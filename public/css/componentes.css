@@ -292,7 +292,8 @@ p{margin:0}
 #situacoes .section__head{margin-inline:auto;text-align:center;justify-items:center}
 /* cada situação é um cartão branco com a moldura aberta da marca (como "O que reunir" e os canais) e o número no quadrado petróleo (como os caminhos); igual no celular e no desktop */
 .sit{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-content:start;padding:var(--s3);background:var(--branco);counter-increment:sit;
-  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%}
+  /* inset 1px: a moldura de 1px em inset:0 some na borda direita com larguras fracionárias (zoom 100% / grid) */
+  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%;--of-inset:1px}
 @container site (min-width:1100px){.sit{padding:var(--s4)}}
 /* o número fica no ::after (o ::before é a moldura aberta), levado para a frente com order */
 .sit::after{content:counter(sit,decimal-leading-zero);order:-1;justify-self:start;width:40px;height:40px;display:grid;place-items:center;margin-bottom:var(--s1);
