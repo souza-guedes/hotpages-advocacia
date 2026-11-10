@@ -1,5 +1,6 @@
 # Roteamento das hotpages (WDLC 2.1). Docroot: public/
 # A query string é preservada (sem QSD), então os UTM chegam intactos ao index.php.
+# Produção (WDLC 7.1 / #20): compressão + cabeçalhos de segurança.
 
 Options -Indexes
 DirectoryIndex index.php
@@ -14,4 +15,24 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Compressão Gzip (Brotli no shared Hostinger vem do painel/CDN quando disponível).
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType DEFLATE application/json application/xml application/xhtml+xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/x-javascript text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/xhtml+xml
+    AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
