@@ -6,18 +6,21 @@
  * @var string $description
  * @var string $content HTML já renderizado do corpo
  * @var string $whatsappTopic tema que identifica a página na mensagem do WhatsApp
+ * @var string $whatsappUrl
  * @var array<string, mixed> $firm
  * @var array<string, string> $utm
+ * @var bool $showPageChrome se false, omite canais (já no content) — sempre true no fluxo atual
+ * @var \SouzaGuedes\HotPages\View $view
  */
-
-// Mensagem neutra e editável, só com o tema (WDLC 1.2, seção 5, regra 2). Nunca leva UTM.
-$whatsappText = "Olá, vim pela página sobre {$whatsappTopic} e gostaria de apresentar minha situação.";
-$whatsappUrl = 'https://wa.me/' . $firm['whatsapp'] . '?text=' . rawurlencode($whatsappText);
 
 $utmAttributes = '';
 foreach ($utm as $key => $value) {
     $utmAttributes .= ' data-' . e(str_replace('_', '-', $key)) . '="' . e($value) . '"';
 }
+$chrome = [
+    'firm' => $firm,
+    'whatsappUrl' => $whatsappUrl,
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -26,36 +29,24 @@ foreach ($utm as $key => $value) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title) ?></title>
     <meta name="description" content="<?= e($description) ?>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+    <link rel="stylesheet" href="/css/componentes.css">
 </head>
 <body<?= $utmAttributes ?>>
-    <header>
-        <p><?= e($firm['name']) ?></p>
-    </header>
+<div class="site">
+    <?= $view->partial('icons') ?>
+    <?= $view->partial('cabecalho', $chrome) ?>
 
     <main>
         <?= $content ?>
-
-        <section aria-labelledby="contato">
-            <h2 id="contato">Canais de atendimento</h2>
-            <p>Se quiser apresentar sua situação, escolha um dos canais oficiais do escritório.</p>
-            <ul>
-                <li><a href="<?= e($whatsappUrl) ?>" rel="noopener" target="_blank">WhatsApp <?= e($firm['phone_display']) ?></a></li>
-                <li><a href="tel:<?= e($firm['phone_e164']) ?>">Telefone <?= e($firm['phone_display']) ?></a></li>
-                <li><a href="mailto:<?= e($firm['email']) ?>"><?= e($firm['email']) ?></a></li>
-            </ul>
-            <p><?= e($firm['hours']) ?>.</p>
-        </section>
+        <?= $view->partial('canais', $chrome) ?>
     </main>
 
-    <footer>
-        <p><?= e($firm['name']) ?></p>
-        <ul>
-            <?php foreach ($firm['partners'] as $partner): ?>
-                <li><?= e($partner['name']) ?>, <?= e($partner['oab']) ?></li>
-            <?php endforeach; ?>
-        </ul>
-        <p><?= e($firm['address']) ?></p>
-        <p>Conteúdo de caráter meramente informativo, nos termos do Provimento CFOAB nº 205/2021. Não constitui consulta jurídica nem promessa de resultado.</p>
-    </footer>
+    <?= $view->partial('rodape', $chrome) ?>
+    <?= $view->partial('cookies') ?>
+</div>
+<script src="/js/hotpage.js" defer></script>
 </body>
 </html>

@@ -66,24 +66,65 @@ check('append com query existente', '/saude?a=1&utm_source=google', Utm::append(
 check('append antes do fragmento', '/saude?utm_source=google#perguntas', Utm::append('/saude#perguntas', ['utm_source' => 'google']));
 check('append codifica espaço', '/saude?utm_term=plano%20negou', Utm::append('/saude', ['utm_term' => 'plano negou']));
 
+// Schema das páginas (Fase 5)
+foreach (['imobiliario', 'saude', 'consumidor'] as $slug) {
+    $p = $pages[$slug];
+    check("{$slug} tem situations", true, isset($p['situations']) && is_array($p['situations']) && $p['situations'] !== []);
+    check("{$slug} faq é q+a", true, isset($p['faq'][0]['q'], $p['faq'][0]['a']));
+}
+check('imobiliario whatsapp_topic atraso', 'atraso na entrega do imóvel', $pages['imobiliario']['whatsapp_topic']);
+
 // Views
 $firm = require HOTPAGES_ROOT . '/config/firm.php';
 $view = new View(HOTPAGES_ROOT . '/src/Views');
+$whatsappTopic = $pages['saude']['whatsapp_topic'];
+$whatsappText = "Olá, vim pela página sobre {$whatsappTopic} e gostaria de apresentar minha situação.";
+$whatsappUrl = 'https://wa.me/' . $firm['whatsapp'] . '?text=' . rawurlencode($whatsappText);
 $html = $view->render('layout', [
     'title' => 'T <x>',
     'description' => 'D',
-    'whatsappTopic' => 'Direito de Saúde',
-    'content' => $view->render('page', ['page' => $pages['saude']]),
+    'whatsappTopic' => $whatsappTopic,
+    'whatsappUrl' => $whatsappUrl,
+    'content' => $view->render('page', [
+        'page' => $pages['saude'],
+        'firm' => $firm,
+        'whatsappUrl' => $whatsappUrl,
+    ]),
     'firm' => $firm,
     'utm' => ['utm_source' => 'google', 'utm_campaign' => 'negativa'],
 ]);
 check('título escapado', true, str_contains($html, '<title>T &lt;x&gt;</title>'));
 check('UTM em data-*', true, str_contains($html, 'data-utm-source="google" data-utm-campaign="negativa"'));
-check('sócio 1 com OAB', true, str_contains($html, 'Rodrigo Guedes da Silva, OAB/SP nº 538.416'));
-check('sócio 2 com OAB', true, str_contains($html, 'Lays Regina de Souza, OAB/SP nº 511.204'));
-check('WhatsApp com tema', true, str_contains($html, rawurlencode('Olá, vim pela página sobre Direito de Saúde e gostaria de apresentar minha situação.')));
+check('sócio 1 com OAB', true, str_contains($html, 'Rodrigo Guedes da Silva') && str_contains($html, 'OAB/SP nº 538.416'));
+check('sócio 2 com OAB', true, str_contains($html, 'Lays Regina de Souza') && str_contains($html, 'OAB/SP nº 511.204'));
+check('WhatsApp com tema', true, str_contains($html, rawurlencode($whatsappText)));
 check('WhatsApp sem UTM', false, (bool) preg_match('/wa\.me[^"]*utm_/', $html));
 check('sem formulário', false, str_contains($html, '<form'));
+check('sem float WhatsApp', false, str_contains($html, 'whatsapp-float') || str_contains($html, 'mbar'));
+check('seção situações', true, str_contains($html, 'id="situacoes"'));
+check('seção perguntas', true, str_contains($html, 'id="perguntas"'));
+check('seção canais', true, str_contains($html, 'id="canais"'));
+check('FAQ com resposta', true, str_contains($html, '<details name="faq"'));
+check('CSS do design-system', true, str_contains($html, '/css/componentes.css'));
+
+$imobTopic = $pages['imobiliario']['whatsapp_topic'];
+$imobText = "Olá, vim pela página sobre {$imobTopic} e gostaria de apresentar minha situação.";
+$imobUrl = 'https://wa.me/' . $firm['whatsapp'] . '?text=' . rawurlencode($imobText);
+$imobHtml = $view->render('layout', [
+    'title' => $pages['imobiliario']['title'],
+    'description' => $pages['imobiliario']['description'],
+    'whatsappTopic' => $imobTopic,
+    'whatsappUrl' => $imobUrl,
+    'content' => $view->render('page', [
+        'page' => $pages['imobiliario'],
+        'firm' => $firm,
+        'whatsappUrl' => $imobUrl,
+    ]),
+    'firm' => $firm,
+    'utm' => [],
+]);
+check('imobiliario WhatsApp atraso', true, str_contains($imobHtml, rawurlencode($imobText)));
+check('imobiliario heading atraso', true, str_contains($imobHtml, 'A construtora atrasou a entrega do seu imóvel?'));
 
 $notFound = $view->render('404', ['pages' => $pages, 'utm' => ['utm_source' => 'google']]);
 check('404 preserva UTM nos links', true, str_contains($notFound, 'href="/saude?utm_source=google"'));

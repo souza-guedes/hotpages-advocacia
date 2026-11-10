@@ -31,20 +31,36 @@ $view = new View(HOTPAGES_ROOT . '/src/Views');
 
 if ($route['type'] === 'page') {
     $page = $pages[$route['slug']];
-    $content = $view->render('page', ['page' => $page]);
+    $whatsappTopic = $page['whatsapp_topic'];
+    $whatsappText = "Olá, vim pela página sobre {$whatsappTopic} e gostaria de apresentar minha situação.";
+    $whatsappUrl = 'https://wa.me/' . $firm['whatsapp'] . '?text=' . rawurlencode($whatsappText);
+    $content = $view->render('page', [
+        'page' => $page,
+        'firm' => $firm,
+        'whatsappUrl' => $whatsappUrl,
+    ]);
     $meta = [
         'title' => $page['title'],
         'description' => $page['description'],
-        'whatsappTopic' => $page['whatsapp_topic'],
+        'whatsappTopic' => $whatsappTopic,
+        'whatsappUrl' => $whatsappUrl,
     ];
 } else {
     http_response_code(404);
+    $whatsappTopic = 'as áreas de atuação do escritório';
+    $whatsappText = "Olá, vim pela página sobre {$whatsappTopic} e gostaria de apresentar minha situação.";
+    $whatsappUrl = 'https://wa.me/' . $firm['whatsapp'] . '?text=' . rawurlencode($whatsappText);
     $content = $view->render('404', ['pages' => $pages, 'utm' => $utm]);
     $meta = [
         'title' => 'Página não encontrada | ' . $firm['name'],
         'description' => '',
-        'whatsappTopic' => 'as áreas de atuação do escritório',
+        'whatsappTopic' => $whatsappTopic,
+        'whatsappUrl' => $whatsappUrl,
     ];
 }
 
-echo $view->render('layout', $meta + ['content' => $content, 'firm' => $firm, 'utm' => $utm]);
+echo $view->render('layout', $meta + [
+    'content' => $content,
+    'firm' => $firm,
+    'utm' => $utm,
+]);

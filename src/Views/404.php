@@ -1,7 +1,6 @@
 <?php
 /**
- * Página não encontrada. Lista as hotpages mantendo os UTM, para não perder a
- * origem de quem chegou por um link de anúncio errado.
+ * Página não encontrada. Lista as hotpages mantendo os UTM.
  *
  * @var array<string, array<string, mixed>> $pages
  * @var array<string, string> $utm
@@ -9,12 +8,17 @@
 
 use SouzaGuedes\HotPages\Utm;
 ?>
-<article>
-    <h1>Página não encontrada</h1>
-    <p>O endereço acessado não existe. Veja as áreas de atuação do escritório:</p>
-    <ul>
-        <?php foreach ($pages as $slug => $page): ?>
-            <li><a href="<?= e(Utm::append('/' . $slug, $utm)) ?>"><?= e($page['area']) ?></a></li>
-        <?php endforeach; ?>
+<section class="section">
+  <div class="wrap">
+    <div class="section__head">
+      <p class="eyebrow">Página não encontrada</p>
+      <h1 class="h2">O endereço acessado não existe</h1>
+      <p class="muted">Veja as áreas de atuação do escritório:</p>
+    </div>
+    <ul class="checks">
+      <?php foreach ($pages as $slug => $page): ?>
+        <li><a class="link arrow" href="<?= e(Utm::append('/' . $slug, $utm)) ?>"><?= e($page['area']) ?></a><span><?= e($page['heading']) ?></span></li>
+      <?php endforeach; ?>
     </ul>
-</article>
+  </div>
+</section>

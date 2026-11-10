@@ -21,7 +21,9 @@ final class View
             throw new \RuntimeException("Template não encontrado: {$template}");
         }
 
-        return (static function (string $__file, array $__vars): string {
+        $vars['view'] = $this;
+
+        return (function (string $__file, array $__vars): string {
             extract($__vars, EXTR_SKIP);
             ob_start();
             try {
@@ -32,5 +34,11 @@ final class View
                 throw $e;
             }
         })($file, $vars);
+    }
+
+    /** Atalho para partials em src/Views/partials/. @param array<string, mixed> $vars */
+    public function partial(string $name, array $vars = []): string
+    {
+        return $this->render('partials/' . $name, $vars);
     }
 }

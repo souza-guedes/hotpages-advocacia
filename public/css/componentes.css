@@ -1,0 +1,527 @@
+/* Componentes das hotpages Souza Guedes Advogados.
+   Extraído sem alterações do protótipo aprovado da WDLC 3.1 (docs/fase-3-design-ui/wdlc-3.1-mockup-hotpage/prototipo.html)
+   na WDLC 3.2 (#9). O protótipo e o catálogo de componentes usam este arquivo; a Fase 5 (#14) parte dele.
+   O CSS da barra de revisão e do palco dos mockups fica em revisao.css. */
+/* Hotpage modelo das campanhas (atraso na entrega do imóvel).
+   Base visual: o design system do site institucional (WDLC 3.1 + mockups WDLC 3.2), reaproveitado sem alterações.
+   A página é uma só e sem menu: o visitante chega por anúncio, entende a situação e, se quiser, escolhe um canal.
+   Ritmo das faixas: papel (hero) · branco (situações) · petróleo-profundo (quem atende) · papel (documentos) · branco (perguntas) · petróleo-profundo (canais).
+   Regras de cor (auditoria WCAG 2.1 AA do WDLC 3.1): turquesa nunca é texto; latão só sobre fundo escuro; latão-escuro sobre papel/branco. */
+/* ---------- Base: design system do site institucional ---------- */
+:root{
+  color-scheme: light;
+  --turquesa:#5AA7A1; --petroleo:#1E5A56; --petroleo-profundo:#123B39; --tinta:#0E1E1D;
+  --papel:#F5F2EC; --nevoa:#E4EEEC; --texto-secundario:#4A5554; --texto-claro:#B9CFCC;
+  --latao:#C9A970; --latao-escuro:#7A5F33; --linha:#CFD8D6; --borda-campo:#6E7C7A; --branco:#FFFFFF;
+  --erro:#9B2C1F;   /* só erro de formulário; as hotpages não têm formulário (WDLC 1.2, seção 5) */
+
+  --font-display:"Cinzel","Trajan Pro",Georgia,serif;
+  --font-titulo:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --font-sans:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s6:48px; --s10:80px; --s16:128px;
+  --r-sm:2px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{color:var(--tinta);font-family:var(--font-sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--petroleo);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+
+/* ---------- Elementos de marca ---------- */
+/* Moldura aberta: fio de 1px com uma interrupção no lado esquerdo (assinatura do monograma) */
+.of{position:relative}
+.of::before{content:"";position:absolute;inset:var(--of-inset,0);border:1px solid var(--of-c,var(--tinta));pointer-events:none;transition:border-color .15s;
+  -webkit-mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat;
+          mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat}
+/* Selo: painel petróleo-profundo com moldura dupla (externa aberta, interna fechada) e fio de latão */
+.seal{background:var(--petroleo-profundo);position:relative;--of-c:var(--texto-claro);--of-inset:12% 16%;--of-a:40%;--of-b:56%}
+.seal::after{content:"";position:absolute;inset:18% 23%;border:1px solid var(--texto-claro);pointer-events:none}
+.sq{display:inline-block;width:10px;height:10px;background:var(--petroleo);flex:none}
+
+/* Composição do hero (reprodução da peça de marca) */
+/* mobile/tablet: só a ponta da composição aparece, no canto superior direito, acima do nome */
+.comp{position:absolute;top:0;right:-84px;width:230px;height:84px;margin:0}
+@container site (min-width:760px){.comp{right:-40px;width:400px;height:140px}}
+.comp > *{position:absolute;display:block}
+.comp__nevoa{left:0;top:15%;width:27%;height:33%;background:var(--nevoa);--of-inset:17% 12% 17% 12%;--of-a:30%;--of-b:72%}
+.comp__sq{left:17%;top:56%;width:10%;aspect-ratio:1;background:var(--petroleo)}
+.comp__bar{left:32.5%;top:17.5%;width:15.3%;height:65%;background:var(--turquesa)}
+.comp__panel{left:47.8%;top:0;right:0;bottom:0}
+@container site (min-width:1100px){
+  .comp{position:absolute;right:0;top:0;bottom:0;width:48%;height:auto;margin:0}
+}
+
+/* ---------- Site ---------- */
+.site{font-size:17px;line-height:27px}
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:var(--s2)}
+@container site (min-width:760px){.wrap{padding-inline:var(--s4)}}
+@container site (min-width:1100px){.wrap{padding-inline:var(--s6)}}
+
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-size:13px;line-height:16px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--latao-escuro);margin:0}
+.eyebrow::before{content:"";width:8px;height:8px;background:var(--petroleo);flex:none}
+.dark .eyebrow{color:var(--latao)}
+.dark .eyebrow::before{background:var(--turquesa)}
+.display{font-family:var(--font-display);font-weight:400;letter-spacing:.03em;font-size:30px;line-height:38px;margin:0;text-wrap:balance}
+@container site (min-width:760px){.display{font-size:44px;line-height:52px}}
+.h2,.h3{font-family:var(--font-titulo);font-weight:600;margin:0;text-wrap:balance}
+.h2{font-size:26px;line-height:34px;letter-spacing:-.01em}
+.h3{font-size:20px;line-height:28px}
+@container site (min-width:760px){.h2{font-size:34px;line-height:42px}.h3{font-size:22px;line-height:30px}}
+.lead{font-size:19px;line-height:29px;margin:0;max-width:62ch}
+@container site (min-width:760px){.lead{font-size:20px;line-height:30px}}
+.nota{font-size:14px;line-height:21px;color:var(--texto-secundario)}
+.dark{background:var(--petroleo-profundo);color:var(--papel)}
+.dark .nota,.dark .muted{color:var(--texto-claro)}
+.muted{color:var(--texto-secundario)}
+p{margin:0}
+.prose{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s2);max-width:66ch;align-content:start}
+
+.section{padding-block:var(--s10)}
+@container site (min-width:1100px){.section{padding-block:var(--s16)}}
+.section--tight{padding-block:var(--s6)}
+@container site (min-width:1100px){.section--tight{padding-block:var(--s10)}}
+.section__head{display:grid;gap:var(--s2);margin-bottom:var(--s6);max-width:70ch}
+.more{margin-top:var(--s4)}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s1);font-family:var(--font-sans);font-size:16px;line-height:20px;font-weight:600;
+  padding:14px 24px;border-radius:var(--r-sm);border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+.btn--primary{background:var(--petroleo);color:var(--branco)}
+.btn--primary:hover{background:var(--petroleo-profundo)}
+.btn--ghost{border-color:var(--petroleo);color:var(--petroleo);background:transparent}
+.btn--ghost:hover{background:var(--branco)}
+.dark .btn--light{background:var(--papel);color:var(--tinta)}
+.dark .btn--light:hover{background:var(--branco)}
+.dark .btn--ghost{border-color:var(--texto-claro);color:var(--papel)}
+.dark .btn--ghost:hover{background:rgba(245,242,236,.08)}
+.dark :focus-visible{outline-color:var(--turquesa)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.link{color:var(--petroleo);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.link:hover{text-decoration-thickness:2px}
+.dark .link{color:var(--papel)}
+.arrow::after{content:" →"}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* Header */
+.hdr{background:var(--papel);border-bottom:1px solid var(--linha);position:sticky;top:var(--hdr-top,0px);z-index:5;transition:box-shadow .2s ease}
+.hdr.is-stuck{box-shadow:0 8px 24px -12px rgba(14,30,29,.28)}
+.hdr__in{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:72px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--tinta)}
+.logo-wm{display:block;width:136px;height:28px;color:currentColor}
+@container site (min-width:1100px){.hdr .logo-wm{width:156px;height:32px}}
+/* Hero */
+.hero{position:relative;padding-top:108px;overflow:clip}
+@container site (min-width:760px){.hero{padding-top:172px}}
+.hero__txt{display:grid;gap:var(--s3)}
+.wordmark{font-family:var(--font-display);font-weight:400;font-size:60px;line-height:.98;letter-spacing:.02em;margin:0;color:var(--tinta)}
+.wordmark small{display:block;font-size:13px;letter-spacing:.5em;color:var(--texto-secundario);margin-top:18px;line-height:1}
+.claim{font-family:var(--font-titulo);font-weight:600;font-size:22px;line-height:30px;margin:0;max-width:24ch;text-wrap:balance}
+.hero .lead{color:var(--texto-secundario);max-width:48ch}
+.hero__ctas{display:flex;flex-wrap:wrap;gap:12px}
+.hero__ctas .btn{flex:1 1 auto}
+.hero__id{display:flex;flex-wrap:wrap;gap:6px 28px;padding-top:var(--s3);border-top:1px solid var(--linha);font-size:15px;color:var(--texto-secundario)}
+.hero__id b{color:var(--tinta);font-weight:600}
+@container site (min-width:760px){.wordmark{font-size:92px}}
+@container site (min-width:1100px){
+  .hero{padding-block:var(--s10) var(--s16);min-height:680px}
+  .hero__txt{max-width:600px}
+  .wordmark{font-size:112px}
+  .claim{font-size:26px;line-height:34px}
+  .hero__ctas .btn{flex:none}
+}
+/* 2 · Áreas — a moldura aberta */
+.areas{display:grid;gap:var(--s3)}
+@container site (min-width:760px){.areas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:1100px){.areas--4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.acard{--of-c:var(--borda-campo);--of-a:22%;--of-b:46%;padding:var(--s4) var(--s3);display:flex;flex-direction:column;gap:var(--s2);text-decoration:none;color:inherit;background:var(--branco)}
+.acard:hover{--of-c:var(--petroleo)}
+.acard:hover::before{border-width:2px}
+.acard:hover .acard__more{text-decoration-thickness:2px}
+.acard__icon{width:48px;height:48px;background:var(--petroleo);color:var(--branco);display:grid;place-items:center;flex:none}
+.acard__icon svg{width:24px;height:24px}
+.acard p{color:var(--texto-secundario)}
+.acard__more{margin-top:auto;color:var(--petroleo);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.acard--wide{gap:var(--s3)}
+.acard--wide ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:16px;line-height:24px}
+.acard--wide li{padding-left:18px;position:relative}
+.acard--wide li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:1px;background:var(--latao-escuro)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:13px;line-height:18px;font-weight:600;padding:3px 9px;border:1px solid var(--borda-campo);color:var(--petroleo);border-radius:var(--r-sm);background:transparent}
+.dark .tag{border-color:var(--texto-claro);color:var(--papel)}
+/* 3 · Corpo jurídico — o painel profundo com selo */
+.team .section__head{margin-bottom:var(--s6)}
+/* foto ao lado do texto em todos os formatos; os sócios se separam pelo espaço, sem fios */
+.people{display:grid;gap:var(--s4)}
+@container site (min-width:760px){.people{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s6)}}
+.person{display:grid;grid-template-columns:96px minmax(0,1fr);gap:var(--s2);align-items:center}
+.person__txt{display:grid;gap:4px;min-width:0}
+.person .h3{font-size:18px;line-height:24px}
+.person .person__oab{font-size:14px}
+.person p.bio{margin-top:4px;font-size:15px;line-height:22px;text-wrap:pretty}
+/* foto pequena: só a moldura aberta externa, fina e por cima da foto (a interna sairia carregada) */
+.person .portrait .seal::after{display:none}
+.person .portrait .seal::before{z-index:2;--of-inset:6px;--of-a:34%;--of-b:62%;--of-c:rgba(245,242,236,.55)}
+.person .portrait .seal img{-webkit-mask-image:none;mask-image:none;object-position:50% 0}
+/* desktop: retrato maior, de moldura dupla */
+@container site (min-width:1100px){
+  .person{grid-template-columns:200px minmax(0,1fr);gap:var(--s3)}
+  .person__txt{gap:6px}
+  .person .h3{font-size:22px;line-height:30px}
+  .person .person__oab{font-size:15px}
+  .person p.bio{font-size:16px;line-height:24px}
+  .person .portrait .seal::before,.person .portrait .seal::after{display:block}
+  .person .portrait .seal::before{z-index:auto;--of-inset:7% 9%;--of-a:42%;--of-b:56%;--of-c:var(--texto-claro)}
+  .person .portrait .seal img{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,transparent 100%)}
+}
+.pseal{aspect-ratio:1;max-width:100%;background:var(--petroleo);--of-inset:10%;--of-a:36%;--of-b:60%;display:grid;place-items:center}
+.pseal span{font-family:var(--font-display);font-size:30px;color:var(--papel);letter-spacing:.06em}
+.person__oab{font-family:var(--font-titulo);font-weight:600;font-size:15px;color:var(--texto-claro);letter-spacing:.02em}
+.portrait{display:grid;gap:10px;align-content:start}
+.portrait .seal{aspect-ratio:4/5;max-width:100%;--of-inset:7% 9%;--of-a:42%;--of-b:56%}
+.portrait .seal::after{inset:11% 14%}
+.portrait .seal{overflow:hidden}
+.portrait .seal{background:radial-gradient(120% 70% at 50% 28%,var(--petroleo) 0%,var(--petroleo-profundo) 72%)}
+.portrait .seal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;z-index:1;-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,transparent 100%)}
+.dark .portrait .seal{box-shadow:0 0 0 1px rgba(185,207,204,.28)}
+/* 4 · Artigos — a névoa com moldura aberta, só com texto tinta */
+.notice{background:var(--nevoa);color:var(--tinta);padding:var(--s4) var(--s4) var(--s4) var(--s6);display:grid;gap:8px;--of-c:var(--tinta);--of-inset:12px;--of-a:30%;--of-b:70%;font-size:16px;line-height:25px}
+.notice b{font-family:var(--font-titulo);font-weight:600;font-size:17px}
+/* 5 · CTA final — turquesa ancorada no petróleo */
+.cta{position:relative;padding-block:var(--s10)}
+.cta__bar{position:absolute;top:-40px;right:var(--s2);width:56px;height:96px;background:var(--turquesa)}
+@container site (min-width:1100px){.cta{padding-block:var(--s16)}.cta__bar{right:12%;width:96px;height:160px;top:-64px}}
+.cta__in{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.cta__in{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:var(--s10);align-items:start}}
+.cta .h2{color:var(--papel)}
+/* Canais agrupados por assunto: "Fale com o escritório" (remoto) e "Visite a sede" (presencial) */
+.cgroups{display:grid;gap:var(--s10)}
+@container site (min-width:760px){.cgroups{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:760px){.cgroups--stack{grid-template-columns:minmax(0,1fr);gap:64px}}
+.cgroup{display:grid;gap:var(--s3);align-content:start;padding-top:var(--s3);border-top:1px solid var(--tinta)}
+.dark .cgroup{border-top-color:var(--latao)}
+.cgroup__t{font-family:var(--font-display);font-weight:500;font-size:14px;line-height:18px;letter-spacing:.16em;text-transform:uppercase;margin:0}
+.channels{display:grid;gap:var(--s3);margin:0}
+.channel{display:grid;gap:6px}
+.channel dt{display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-secundario);font-weight:600}
+.channel dt svg{width:16px;height:16px;flex:none;color:var(--petroleo)}
+.channel dd{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;padding-left:24px}
+.channel strong{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px;overflow-wrap:break-word}
+.dark .channel dt{color:var(--texto-claro)}
+.dark .channel dt svg{color:var(--turquesa)}
+.copy{background:transparent;border:0;padding:0;color:var(--petroleo);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.dark .copy{color:var(--papel)}
+/* Detalhe de área */
+.detail{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.detail{grid-template-columns:minmax(0,1fr) 360px;gap:var(--s10);align-items:start}}
+.detail__main{display:grid;gap:var(--s10);min-width:0}
+.block{display:grid;gap:var(--s2)}
+.list{margin:0;padding:0;list-style:none;display:grid}
+.list li{padding:14px 0 14px 28px;border-top:1px solid var(--linha);position:relative}
+.list li::before{content:"";position:absolute;left:0;top:23px;width:8px;height:8px;background:var(--petroleo)}
+/* Faixas de fundo alternadas nas páginas internas (mesmo ritmo da Home: papel · branco · petróleo-profundo) */
+.band--branco{background:var(--branco);border-block:1px solid var(--linha)}
+.section > .chapter{padding-block:0;border-top:0}
+/* Perfis em fundo escuro */
+.dark .facts div{border-top-color:rgba(185,207,204,.3)}
+.dark .facts dt{color:var(--texto-claro)}
+.dark .person__oab--light{color:var(--latao)}
+/* Contato */
+.ccards{display:grid;gap:var(--s3)}
+@container site (min-width:760px){.ccards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ccard{margin:0;padding:var(--s4) var(--s3);background:var(--papel);display:grid;align-content:start;--of-c:var(--borda-campo);--of-inset:0;--of-a:30%;--of-b:56%}
+.ccard .channel{gap:10px}
+.ccard .channel dd{padding-left:0}
+.ccard .channel strong{font-size:20px;line-height:28px}
+.contact-aside{display:grid;gap:var(--s6);align-content:start}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--s3);counter-reset:st}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px var(--s2);counter-increment:st;padding-top:var(--s3);border-top:1px solid var(--linha)}
+.steps li::before{content:counter(st,decimal-leading-zero);grid-row:span 2;font-family:var(--font-display);font-size:22px;line-height:28px;color:var(--latao-escuro)}
+.steps b{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px}
+.steps span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+/* Rodapé */
+.ftr{background:var(--tinta);color:var(--papel);padding-block:var(--s10) var(--s4);font-size:15px;line-height:23px;border-top:1px solid rgba(90,167,161,.4)}
+.ftr__grid{display:grid;gap:var(--s6)}
+@container site (min-width:760px){.ftr__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:1100px){.ftr__grid{grid-template-columns:minmax(0,4fr) minmax(0,3fr) minmax(0,3fr) minmax(0,2fr)}}
+.ftr h2{font-family:var(--font-display);font-weight:500;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--latao);margin:0 0 12px}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ftr a{color:var(--papel);text-decoration:none}
+.ftr a:hover{text-decoration:underline;text-underline-offset:3px}
+.ftr .muted{color:var(--texto-claro)}
+.ftr__oab li{display:grid}
+.ftr__oab span{color:var(--texto-claro);font-size:14px}
+.ftr__legal{margin-top:var(--s6);padding-top:var(--s3);border-top:1px solid rgba(185,207,204,.25);display:grid;gap:12px;color:var(--texto-claro);font-size:14px;line-height:21px}
+.ftr__legal p{max-width:110ch}
+.ftr .brand{color:var(--papel);flex-direction:column;align-items:flex-start;gap:var(--s2)}
+.ftr .logo-mono{width:64px;height:36px;color:var(--turquesa)}
+.ftr .logo-wm{width:150px;height:31px}
+.ftr :focus-visible{outline-color:var(--turquesa)}
+
+/* Banner de cookies (não bloqueante) */
+.cookie{position:sticky;bottom:0;z-index:6;background:var(--branco);border-top:1px solid var(--linha);box-shadow:0 -8px 24px rgba(14,30,29,.08)}
+.cookie__in{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding-block:14px}
+.cookie p{font-size:14px;line-height:21px;max-width:80ch;flex:1 1 280px}
+.cookie .btn{padding:10px 16px;font-size:15px}
+
+.screen[hidden],[hidden]{display:none!important}
+
+/* ---------- Hotpage ---------- */
+
+/* Cabeçalho: só a marca e o atalho para os canais (sem menu, a página é única) */
+.hdr__cta{display:inline-flex;padding:10px 14px;font-size:15px}
+.hdr__cta .lg{display:none}
+@container site (min-width:760px){.hdr__cta .sm{display:none}.hdr__cta .lg{display:inline}}
+@container site (min-width:1100px){.hdr__cta{padding:11px 18px;font-size:16px}.hdr__in{min-height:88px}}
+
+/* Hero: área de atuação, a situação do visitante e chamadas para entender.
+   O título usa a fonte de assinatura da marca (Cinzel, como os títulos de página do site), sem destaque de cor. */
+@container site (min-width:1100px){.hero .display{font-size:44px;line-height:54px}}
+.hero__txt .lead{max-width:52ch}
+@container site (min-width:1100px){.hero__txt{max-width:580px}.hero{min-height:640px}}
+
+/* Situações: lista numerada no estilo dos valores do site (fio tinta em cima), sem cartões nem ícones.
+   Grade de 2 × 2 com bastante respiro, para cada situação ler como um bloco separado; o número segue o padrão dos passos (Cinzel, latão-escuro). */
+.sits{display:grid;gap:var(--s4);counter-reset:sit}
+@container site (min-width:760px){.sits{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s6) var(--s6)}}
+@container site (min-width:1100px){.sits{max-width:1040px;margin-inline:auto;gap:var(--s6)}}
+/* só o cabeçalho é centralizado; os itens ficam alinhados à esquerda */
+#situacoes .section__head{margin-inline:auto;text-align:center;justify-items:center}
+/* cada situação é um cartão branco com a moldura aberta da marca (como "O que reunir" e os canais) e o número no quadrado petróleo (como os caminhos); igual no celular e no desktop */
+.sit{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-content:start;padding:var(--s3);background:var(--branco);counter-increment:sit;
+  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%}
+@container site (min-width:1100px){.sit{padding:var(--s4)}}
+/* o número fica no ::after (o ::before é a moldura aberta), levado para a frente com order */
+.sit::after{content:counter(sit,decimal-leading-zero);order:-1;justify-self:start;width:40px;height:40px;display:grid;place-items:center;margin-bottom:var(--s1);
+  background:var(--petroleo);color:var(--branco);font-family:var(--font-display);font-size:16px;line-height:1;letter-spacing:.04em}
+.sit h3{font-family:var(--font-titulo);font-weight:600;font-size:19px;line-height:26px;margin:0}
+@container site (min-width:1100px){.sit h3{font-size:20px;line-height:28px}}
+.sit p{color:var(--texto-secundario);max-width:44ch}
+.sits-foot{margin:var(--s6) auto 0;max-width:70ch;text-align:center}
+.sits-dots{display:none}
+
+/* Documentos e caminhos: dois assuntos, dois blocos visuais.
+   "O que reunir" é um cartão branco com moldura aberta (checklist); "Caminhos possíveis" fica fora dele, como linha do tempo numerada. */
+.docs{display:grid;gap:var(--s10)}
+@container site (min-width:1100px){.docs{grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:var(--s16);align-items:start}}
+.dblock__head{display:grid;gap:6px;margin-bottom:var(--s3)}
+.dblock__head p{color:var(--texto-secundario)}
+.kit{background:var(--branco);padding:var(--s4) var(--s3);--of-c:var(--borda-campo);--of-a:18%;--of-b:34%}
+@container site (min-width:760px){.kit{padding:var(--s6) var(--s4)}}
+.kit .dblock__head{padding-bottom:var(--s3);border-bottom:1px solid var(--tinta)}
+.checks{list-style:none;margin:0;padding:0;display:grid}
+.checks li{display:grid;grid-template-columns:8px minmax(0,1fr);gap:2px 14px;padding-block:14px;border-bottom:1px solid var(--linha)}
+.checks li:last-child{border-bottom:0;padding-bottom:0}
+.checks li::before{content:"";grid-row:span 2;width:8px;height:8px;margin-top:8px;background:var(--petroleo)}
+.checks b{font-weight:600}
+.checks span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+/* linha do tempo: quadrados numerados ligados por um fio */
+.paths{list-style:none;margin:0;padding:0;display:grid;counter-reset:st}
+.paths li{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:6px var(--s3);counter-increment:st;padding-bottom:var(--s4)}
+.paths li:last-child{padding-bottom:0}
+.paths li::before{content:counter(st,decimal-leading-zero);grid-row:span 3;width:48px;height:48px;display:grid;place-items:center;background:var(--petroleo);color:var(--branco);
+  font-family:var(--font-display);font-size:18px;letter-spacing:.04em;position:relative;z-index:1}
+.paths li:not(:last-child)::after{content:"";position:absolute;left:23.5px;top:48px;bottom:0;width:1px;background:var(--borda-campo)}
+.paths b{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px;padding-top:11px}
+.paths span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+.paths .link{justify-self:start;margin-top:6px;font-size:16px;line-height:24px}
+
+/* Perguntas frequentes (editorial clara): título, aviso e ajuda numa coluna à esquerda; accordion à direita */
+.acc{border-top:1px solid var(--tinta)}
+.acc details{border-bottom:1px solid var(--linha)}
+.acc summary{list-style:none;display:flex;justify-content:space-between;gap:var(--s3);align-items:center;padding:22px 0;cursor:pointer;
+  font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+@container site (min-width:760px){.acc summary{font-size:18px;line-height:27px;padding:24px 0}}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";flex:none;width:10px;height:10px;margin-right:6px;border-right:1.5px solid var(--petroleo);border-bottom:1.5px solid var(--petroleo);
+  transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+.acc details[open] summary::after{transform:translateY(3px) rotate(-135deg)}
+.acc summary:hover,.acc details[open] summary{color:var(--petroleo)}
+.acc details > div{padding:0 0 var(--s3);display:grid;gap:12px;color:var(--texto-secundario);max-width:64ch}
+/* aviso informativo: linha discreta embaixo das perguntas */
+.faq-note{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:21px;color:var(--texto-secundario)}
+.faq-note svg{width:18px;height:18px;flex:none;color:var(--petroleo);margin-top:1px}
+.faq-note b{color:var(--tinta);font-weight:600}
+.faq-help{display:grid;gap:8px;padding:var(--s3);background:var(--papel);--of-c:var(--borda-campo);--of-a:30%;--of-b:56%}
+.faq-help b{font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+.faq-help .link{justify-self:start;margin-top:4px}
+.faq-ed{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.faq-ed{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:var(--s10);align-items:start}}
+.faq-ed__side{display:grid;gap:var(--s6);align-content:start}
+.faq-ed__main{display:grid;gap:var(--s4);min-width:0}
+/* celular: "Não encontrou sua dúvida?" vem depois das perguntas, não antes */
+@container site (max-width:1099px){.faq-ed__side{display:contents}.faq-ed__main{order:1}.faq-help{order:2}}
+.faq-ed__side .section__head{margin:0}
+
+/* Quem atende: a faixa escura "Corpo Jurídico" do site, logo depois das situações (a credibilidade aparece cedo) */
+/* contato: faixa na largura da seção, logo abaixo dos sócios, com o fundo petróleo */
+.team__cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s3);margin-top:var(--s6);padding:var(--s3);background:var(--petroleo)}
+.team__cta p{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px}
+@container site (max-width:759px){.team__cta .btn{width:100%}}
+@container site (min-width:760px){.team .section__head .muted{max-width:none}}
+
+/* Canais de atendimento: bloco final "Atendimento" do site (petróleo-profundo + barra turquesa).
+   Uma sequência só, alinhada à esquerda, na mesma grade de 3 colunas: cabeçalho com o horário → três canais iguais → o que acontece depois do contato. */
+/* seção toda centralizada: cabeçalho, conteúdo dos cartões e passos */
+.canais__head{display:grid;gap:var(--s2);justify-items:center;text-align:center;max-width:720px;margin-inline:auto}
+.hours{display:inline-flex;gap:10px;align-items:center;margin-top:var(--s1);padding:8px 14px;border:1px solid rgba(185,207,204,.35);color:var(--texto-claro);font-size:15px;line-height:22px;text-align:left}
+.hours svg{width:18px;height:18px;flex:none;color:var(--turquesa)}
+.hours b{color:var(--papel);font-weight:600}
+/* os três canais com o mesmo peso: mesmo cartão, mesmo botão */
+.chs{display:grid;gap:var(--s3);margin-top:var(--s6)}
+@container site (min-width:760px){.chs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin:0;padding:var(--s4) var(--s3);--of-c:rgba(185,207,204,.45);--of-a:28%;--of-b:50%}
+.ch dt{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-claro);font-weight:600}
+.ch dt svg{width:18px;height:18px;flex:none;color:var(--turquesa)}
+.ch dd{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;flex:1}
+.ch strong{font-family:var(--font-titulo);font-weight:600;font-size:20px;line-height:28px;overflow-wrap:break-word}
+.ch .act{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:center;margin-top:auto;padding-top:var(--s1)}
+.ch .btn{padding:12px 18px;font-size:15px}
+/* depois do contato: mesma grade dos cartões, cada passo embaixo de uma coluna */
+.after{margin-top:var(--s10);padding-top:var(--s6);border-top:1px solid rgba(185,207,204,.3)}
+.after summary{list-style:none;display:flex;justify-content:center;align-items:center;gap:var(--s2)}
+.after summary::-webkit-details-marker{display:none}
+.after > .steps{margin-top:var(--s6)}
+/* no desktop é só o título do bloco (sempre aberto); no celular vira um item recolhível, fechado de início */
+@container site (min-width:760px){.after summary{pointer-events:none}}
+.after .cgroup__t{color:var(--latao);text-align:center}
+.after .steps{gap:var(--s3)}
+.after .steps li{grid-template-columns:minmax(0,1fr);justify-items:center;align-content:start;text-align:center;gap:6px}
+.after .steps li::before{grid-row:auto;margin-bottom:4px}
+.after .steps span{max-width:32ch}
+@container site (min-width:760px){.after .steps{grid-template-columns:repeat(3,minmax(0,1fr))}.after .steps li{border-top:0;padding-top:0}}
+.dark .steps li{border-top-color:rgba(185,207,204,.3)}
+.dark .steps li::before{color:var(--texto-claro)}
+.dark .steps span{color:var(--texto-claro)}
+
+/* Rodapé compacto */
+@container site (min-width:1100px){.ftr__grid{grid-template-columns:minmax(0,4fr) minmax(0,3fr) minmax(0,3fr) minmax(0,2fr)}}
+
+/* Celular: a mesma página, mais compacta (menos rolagem, nenhum texto a menos) */
+@container site (max-width:759px){
+  .wrap{padding-inline:24px}
+  .section,.cta{padding-block:64px}
+  /* hero: título e texto menores, para quebrar menos linhas na tela pequena, com respiro entre os blocos */
+  .hero{padding-top:112px;padding-bottom:var(--s6)}
+  .hero__txt{gap:var(--s3)}
+  .hero .eyebrow{margin-bottom:4px}
+  .hero .display{font-size:24px;line-height:34px;letter-spacing:.01em}
+  .hero .lead{font-size:17px;line-height:27px}
+  .hero__ctas{margin-top:var(--s2);gap:var(--s2)}
+  .hero__id{font-size:14px;margin-top:var(--s3);padding-top:var(--s3);gap:10px 28px}
+  /* situações: carrossel com deslize lateral (sem rolagem automática); o próximo item aparece na borda para indicar que há mais */
+  .sits{display:grid;grid-auto-flow:column;grid-auto-columns:82%;gap:var(--s3);overflow-x:auto;scroll-snap-type:x mandatory;
+    margin-inline:-24px;padding-inline:24px;scroll-padding-inline:24px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .sits::-webkit-scrollbar{display:none}
+  .sit{scroll-snap-align:start}
+  .sit h3{font-size:18px;line-height:25px}
+  .sits-dots{display:flex;justify-content:center;gap:8px;margin-top:var(--s3)}
+  .sits-dots span{width:8px;height:8px;background:var(--linha);transition:background .2s}
+  .sits-dots span.on{background:var(--petroleo)}
+  .sits-foot{margin-top:var(--s3)}
+  .section__head{margin-bottom:var(--s4)}
+  /* documentos: menos espaço interno no cartão e na linha do tempo */
+  .docs{gap:var(--s6)}
+  .kit{padding:var(--s3) var(--s2)}
+  .checks li{padding-block:12px}
+  .paths li{padding-bottom:var(--s3)}
+  /* canais: cada canal numa linha (rótulo e contato à esquerda, botão à direita), os três iguais */
+  .chs{gap:12px;margin-top:var(--s4)}
+  .ch{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px var(--s2);text-align:left;padding:var(--s2) 20px}
+  .ch dt{justify-content:flex-start;font-size:12px}
+  .ch dd{display:contents}
+  .ch strong{grid-column:1;font-size:17px;line-height:24px}
+  .ch .act{grid-column:2;grid-row:1 / span 2;margin:0;padding:0}
+  .ch .btn{padding:10px 12px;font-size:14px;width:132px;justify-content:center}
+  /* canais: cabeçalho mais leve; o horário vira uma linha discreta e "Depois do primeiro contato" fica recolhido */
+  .canais__head{gap:12px}
+  .canais__head .muted{font-size:16px;line-height:24px}
+  .hours{border:0;padding:0;margin-top:4px;font-size:14px;line-height:20px;align-items:flex-start;text-align:center;max-width:32ch}
+  .hours svg{display:none}
+  .after{margin-top:var(--s4);padding-top:0;border-top:0;border-bottom:1px solid rgba(185,207,204,.3)}
+  .after summary{justify-content:space-between;padding:18px 0;border-top:1px solid rgba(185,207,204,.3);cursor:pointer}
+  .after summary::after{content:"";flex:none;width:10px;height:10px;margin-right:6px;border-right:1.5px solid var(--turquesa);border-bottom:1.5px solid var(--turquesa);
+    transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+  .after[open] summary::after{transform:translateY(3px) rotate(-135deg)}
+  .after > .steps{margin-top:0;padding-bottom:var(--s3)}
+  /* passos no celular: número ao lado do título, como uma lista, em vez de empilhados e centralizados */
+  /* perguntas: só as perguntas à vista (todas fechadas), linhas mais baixas e aviso menor */
+  .faq-ed{gap:var(--s4)}
+  .faq-ed__main{gap:var(--s3)}
+  .acc summary{padding:16px 0;font-size:16px;line-height:23px}
+  .acc details > div{font-size:16px;line-height:24px}
+  .faq-note{font-size:13px;line-height:19px}
+  .faq-note svg{width:16px;height:16px}
+  .after .steps{gap:var(--s2)}
+  .after .steps li{grid-template-columns:40px minmax(0,1fr);justify-items:start;text-align:left;gap:2px 12px;padding-top:var(--s2)}
+  .after .steps li::before{grid-row:span 2;margin:0}
+  .after .cgroup__t{text-align:left}
+  /* rodapé: sede e escritório lado a lado; contato na linha inteira */
+  .ftr{padding-top:var(--s6)}
+  .ftr__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4) var(--s3)}
+  .ftr__grid > :first-child,.ftr__grid > :nth-child(3){grid-column:1 / -1}
+  .ftr__grid > :nth-child(3){order:1}
+  .ftr__legal{margin-top:var(--s4)}
+}
+/* Documentos e caminhos no celular e no tablet: abas "O que reunir" / "Caminhos possíveis", um assunto por vez */
+.dtabs{display:none}
+@container site (max-width:1099px){
+  .dtabs{display:grid;grid-template-columns:1fr 1fr;margin-bottom:var(--s3);border:1px solid var(--petroleo)}
+  .dtabs button{appearance:none;border:0;background:transparent;color:var(--petroleo);font:600 15px/20px var(--font-titulo);padding:12px 8px;cursor:pointer}
+  .dtabs button[aria-selected="true"]{background:var(--petroleo);color:var(--branco)}
+  .dtabs button:focus-visible{outline:2px solid var(--petroleo);outline-offset:2px}
+  .docs[data-tab="kit"] .dpaths,.docs[data-tab="paths"] .kit{display:none}
+  .docs .dblock__head .h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .dpaths{padding-top:var(--s1)}
+}
+/* Perguntas no celular: a seção de canais vem logo depois, então o atalho "Não encontrou sua dúvida?" fica só no desktop */
+@container site (max-width:1099px){.faq-help{display:none}}
+
+/* Banner de cookies: aceitar e recusar com o mesmo peso visual (tags só depois do aceite) */
+.cookie__btns{display:flex;gap:10px;flex-wrap:wrap}
+.cookie__btns .btn{min-width:112px}
+
+/* ---------- Ajuste da WDLC 3.2: celulares de 360px ----------
+   O protótipo da WDLC 3.1 foi desenhado em 390px. Abaixo de 380px, a linha de cada canal não comporta o contato e o
+   botão lado a lado (o telefone e o e-mail quebravam no meio), então o botão desce para baixo do contato. */
+@container site (max-width:379px){
+  .ch{grid-template-columns:minmax(0,1fr)}
+  .ch .act{grid-column:1;grid-row:auto;justify-content:flex-start;padding-top:4px}
+  .ch .btn{width:100%}
+}
+
+/* ---------- Propostas da WDLC 3.2 (#9): sujeitas à aprovação dos sócios ----------
+   Não aparecem no protótipo aprovado da WDLC 3.1. Só entram na Fase 5 se os sócios aprovarem. */
+
+/* Barra de canais fixa no celular: discreta, sem pulso, sem tooltip e sem abrir nada sozinha.
+   Os três canais com o mesmo peso. Some a partir de 760px e enquanto o aviso de cookies estiver aberto. */
+.mbar{position:sticky;bottom:0;z-index:6;background:var(--papel);border-top:1px solid var(--linha);box-shadow:0 -8px 24px rgba(14,30,29,.08);padding-bottom:env(safe-area-inset-bottom,0px)}
+.mbar ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.mbar li + li{border-left:1px solid var(--linha)}
+.mbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:8px 4px;color:var(--petroleo);
+  font-family:var(--font-titulo);font-weight:600;font-size:13px;line-height:16px;text-decoration:none;transition:background-color .15s}
+.mbar a svg{width:20px;height:20px;flex:none}
+.mbar a:hover{background:var(--branco)}
+.mbar a:focus-visible{outline-offset:-4px}
+@container site (min-width:760px){.mbar{display:none}}
+
+/* Aviso de cookies com "Configurar": o painel abre dentro do próprio aviso (sem modal) e começa com as medições desligadas */
+.cookie__link{background:transparent;border:0;padding:10px 4px;font-size:15px;cursor:pointer}
+/* no celular, "Configurar" fica numa linha própria, embaixo de "Recusar" e "Aceitar", que continuam lado a lado */
+@container site (max-width:759px){.cookie__link{order:1;flex:1 0 100%;text-align:left;padding:4px 0}}
+.cookie__cfg{display:grid;gap:var(--s2);padding-block:4px 16px}
+.copts{margin:0;padding:0;border:0;display:grid;min-width:0}
+.copts legend{padding:0;margin-bottom:8px;font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+.copt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--s2);align-items:center;padding-block:12px;border-top:1px solid var(--linha);cursor:pointer}
+.copt b{font-weight:600;font-size:15px;line-height:22px}
+.copt span{display:block;color:var(--texto-secundario);font-size:14px;line-height:21px;max-width:72ch}
+.copt:has(:disabled){cursor:default}
+/* interruptor quadrado, como o resto da marca (o site não tem uso aprovado para cantos redondos): caixa de seleção com role="switch"; o estado aparece na posição e no preenchimento, não só na cor */
+.switch{appearance:none;-webkit-appearance:none;margin:0;width:44px;height:24px;border:1px solid var(--borda-campo);border-radius:var(--r-sm);background:var(--branco);position:relative;cursor:pointer;flex:none;transition:background-color .15s,border-color .15s}
+.switch::before{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--borda-campo);transition:transform .15s,background-color .15s}
+.switch:checked{background:var(--petroleo);border-color:var(--petroleo)}
+.switch:checked::before{transform:translateX(20px);background:var(--branco)}
+.switch:hover{border-color:var(--petroleo)}
+.switch:disabled{opacity:.55;cursor:default}
