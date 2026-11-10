@@ -31,7 +31,8 @@ def capture(html, vp, hide_cookie=True, height=None, extra=''):
     height = height or full
     js = (f'window.fit=function(){{frame.style.zoom=""}};setVP("{vp}");frame.style.setProperty("--hdr-top","0px");'
           + ('document.getElementById("cookie").hidden=true;' if hide_cookie else '') + extra)
-    page = html.replace('</style>', '</style>' + STYLE, 1).replace('</script>', f'{js}</script>', 1)
+    marker = '<!-- ======= Barra de revisão ======= -->'  # o CSS vem de design-system/ por <link>; o estilo da captura entra depois
+    page = html.replace(marker, STYLE + marker, 1).replace('</script>', f'{js}</script>', 1)
     with tempfile.TemporaryDirectory() as tmp:
         f = SRC.parent / f'.captura-{vp}.html'  # ao lado do protótipo, para os caminhos assets/ funcionarem
         png = Path(tmp) / 's.png'

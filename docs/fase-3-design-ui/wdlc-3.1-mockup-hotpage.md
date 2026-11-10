@@ -78,4 +78,4 @@ Os textos dão forma ao layout. A copy final vem da #11.
 | Rota desta página | Sócios / Fase 5 | Hoje `/imobiliario` em `config/pages.php` reúne usucapião, despejo, leilão e atraso. A #8 pede uma página só sobre atraso, como propõe a WDLC 1.1 ("uma página por subtema"). Definir o slug (por exemplo `/atraso-na-entrega`) e ajustar `config/pages.php`, `public/.htaccess` e os testes na Fase 5. |
 | Tema na mensagem do WhatsApp | Fase 5 | O protótipo usa "atraso na entrega do imóvel", como pede a #8. Em `config/pages.php` está "Direito Imobiliário". |
 | Copy final e respostas das perguntas | #11 | Textos atuais são provisórios. |
-| Componentes (perguntas, canais, rodapé) e seus estados | #9 | Partir deste mockup. |
+| Componentes (perguntas, canais, rodapé) e seus estados | #9 | Feito: [WDLC 3.2 — catálogo de componentes](wdlc-3.2-catalogo-componentes.md). O CSS deste protótipo passou para [`design-system/`](../../design-system/). |
