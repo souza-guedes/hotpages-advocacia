@@ -64,18 +64,18 @@ A ordem segue a do site institucional: quem é o escritório aparece logo depois
 - [x] **Identificação:** nome completo e OAB/SP dos dois sócios no hero, em "Quem atende" e no rodapé, além da denominação "Souza Guedes Advogados".
 - [x] **Contraste:** só combinações aprovadas na auditoria WCAG 2.1 AA do site institucional (`tinta` sobre `papel`, `papel` sobre `petroleo-profundo`, `latao` só sobre fundo escuro, `turquesa` só decorativa).
 
-## 5. Conteúdo provisório
+## 5. Conteúdo
 
-Os textos dão forma ao layout. A copy final vem da #11.
+A copy final da página está na [WDLC 4.1](../fase-4-copy-conteudo/wdlc-4.1-copy-atraso-entrega-imovel.md) (#11), a partir deste protótipo aprovado.
 
-- **Perguntas frequentes:** a primeira é a pergunta de referência da WDLC 1.1, seção 6. As outras cinco são exemplos. As respostas são gerais e citam só a Lei nº 13.786/2018 e o limite legal de 180 dias do prazo de tolerância (Lei nº 4.591/1964, art. 43-A).
-- **Situações, documentos e caminhos:** seguem o texto de apoio da #8.
+- **Perguntas frequentes:** a primeira é a pergunta de referência da WDLC 1.1, seção 6. As respostas citam o Código de Defesa do Consumidor, a Lei nº 13.786/2018 e o limite legal de 180 dias do prazo de tolerância (Lei nº 4.591/1964, art. 43-A).
+- **Situações, documentos e caminhos:** texto aprovado no mockup da #8, formalizado na WDLC 4.1.
 
 ## 6. Pendências
 
 | Item | Responsável | Observação |
 | --- | --- | --- |
-| Rota desta página | Sócios / Fase 5 | Hoje `/imobiliario` em `config/pages.php` reúne usucapião, despejo, leilão e atraso. A #8 pede uma página só sobre atraso, como propõe a WDLC 1.1 ("uma página por subtema"). Definir o slug (por exemplo `/atraso-na-entrega`) e ajustar `config/pages.php`, `public/.htaccess` e os testes na Fase 5. |
-| Tema na mensagem do WhatsApp | Fase 5 | O protótipo usa "atraso na entrega do imóvel", como pede a #8. Em `config/pages.php` está "Direito Imobiliário". |
-| Copy final e respostas das perguntas | #11 | Textos atuais são provisórios. |
+| Rota desta página | Sócios / Fase 5 | Em `config/pages.php`, a entrada `/imobiliario` já usa a copy de atraso (WDLC 4.1). Definir o slug dedicado (por exemplo `/atraso-na-entrega`) e ajustar `public/.htaccess` e os testes na Fase 5. |
+| Tema na mensagem do WhatsApp | Fase 5 (UI) | `whatsapp_topic` em `config/pages.php` já é "atraso na entrega do imóvel" (WDLC 4.1 / #11). A UI completa da Fase 5 deve usar o mesmo tema nos botões WhatsApp. |
+| Copy final e respostas das perguntas | #11 | Feito: [WDLC 4.1 — copy de atraso na entrega](../fase-4-copy-conteudo/wdlc-4.1-copy-atraso-entrega-imovel.md). Respostas entram no HTML na Fase 5 (#14). |
 | Componentes (perguntas, canais, rodapé) e seus estados | #9 | Feito: [WDLC 3.2 — catálogo de componentes](wdlc-3.2-catalogo-componentes.md). O CSS deste protótipo passou para [`design-system/`](../../design-system/). |
