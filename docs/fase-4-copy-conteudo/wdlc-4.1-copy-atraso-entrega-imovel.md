@@ -139,7 +139,7 @@ Reaproveitados do mockup / `config/firm.php` — não são específicos desta co
 
 ## 8. Google Ads (proposta)
 
-Destino da campanha de pesquisa: hotpage do tema (hoje `/imobiliario`; slug dedicado fica para a Fase 5).
+Destino da campanha de pesquisa: `/imobiliario` (única hotpage imobiliária do piloto; tema atraso na entrega).
 
 **Palavras-chave permitidas (WDLC 1.2 §3.2):**
 
