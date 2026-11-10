@@ -75,7 +75,7 @@ A copy final da página está na [WDLC 4.1](../fase-4-copy-conteudo/wdlc-4.1-cop
 
 | Item | Responsável | Observação |
 | --- | --- | --- |
-| Rota desta página | Sócios / Fase 5 | Em `config/pages.php`, a entrada `/imobiliario` já usa a copy de atraso (WDLC 4.1). Definir o slug dedicado (por exemplo `/atraso-na-entrega`) e ajustar `public/.htaccess` e os testes na Fase 5. |
-| Tema na mensagem do WhatsApp | Fase 5 (UI) | `whatsapp_topic` em `config/pages.php` já é "atraso na entrega do imóvel" (WDLC 4.1 / #11). A UI completa da Fase 5 deve usar o mesmo tema nos botões WhatsApp. |
+| Rota desta página | — | **Descartado** slug dedicado `/atraso-na-entrega`. Fica `/imobiliario` como a **única** hotpage imobiliária do piloto (tema atraso). Saúde e consumidor continuam em `/saude` e `/consumidor`. |
+| Tema na mensagem do WhatsApp | Fase 5 (UI) | `whatsapp_topic` em `config/pages.php` já é "atraso na entrega do imóvel" (WDLC 4.1 / #11). A UI completa da Fase 5 (#14) deve usar o mesmo tema nos botões WhatsApp. |
 | Copy final e respostas das perguntas | #11 | Feito: [WDLC 4.1 — copy de atraso na entrega](../fase-4-copy-conteudo/wdlc-4.1-copy-atraso-entrega-imovel.md). Respostas entram no HTML na Fase 5 (#14). |
 | Componentes (perguntas, canais, rodapé) e seus estados | #9 | Feito: [WDLC 3.2 — catálogo de componentes](wdlc-3.2-catalogo-componentes.md). O CSS deste protótipo passou para [`design-system/`](../../design-system/). |
