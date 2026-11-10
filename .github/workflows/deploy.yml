@@ -1,0 +1,88 @@
+# Deploy das hotpages para Hostinger (WDLC 7.1 / #20).
+# Layout no servidor:
+#   domains/lp.souzaguedes.adv.br/public_html/  ← public/
+#   domains/lp.souzaguedes.adv.br/src/          ← src/
+#   domains/lp.souzaguedes.adv.br/config/       ← config/
+#
+# Secrets: HOSTINGER_HOST, HOSTINGER_PORT, HOSTINGER_USER, HOSTINGER_SSH_KEY
+
+name: Deploy Hostinger
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'src/**'
+      - 'config/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.HOSTINGER_SSH_KEY }}
+
+      - name: Add Hostinger host key
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "$HOSTINGER_PORT" -H "$HOSTINGER_HOST" >> ~/.ssh/known_hosts
+
+      - name: Rsync to Hostinger
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          REMOTE_BASE: /home/u451023057/domains/lp.souzaguedes.adv.br
+        run: |
+          set -euo pipefail
+          SSH=(ssh -p "$HOSTINGER_PORT" -o IdentitiesOnly=yes)
+          RSYNC_SSH="ssh -p $HOSTINGER_PORT -o IdentitiesOnly=yes"
+          TARGET="${HOSTINGER_USER}@${HOSTINGER_HOST}"
+
+          "${SSH[@]}" "$TARGET" "mkdir -p '$REMOTE_BASE/public_html' '$REMOTE_BASE/src' '$REMOTE_BASE/config'"
+
+          rsync -az --delete -e "$RSYNC_SSH" \
+            ./public/ "${TARGET}:${REMOTE_BASE}/public_html/"
+
+          rsync -az --delete -e "$RSYNC_SSH" \
+            ./src/ "${TARGET}:${REMOTE_BASE}/src/"
+
+          rsync -az --delete -e "$RSYNC_SSH" \
+            ./config/ "${TARGET}:${REMOTE_BASE}/config/"
+
+          # Remove placeholder do painel se ainda existir
+          "${SSH[@]}" "$TARGET" "rm -f '$REMOTE_BASE/public_html/default.php'"
+
+      - name: Smoke HTTPS
+        run: |
+          set -euo pipefail
+          # Raiz é 404 de propósito (Router / tests); hotpages respondem 200.
+          root=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "https://lp.souzaguedes.adv.br/")
+          echo "/ -> ${root}"
+          test "$root" = "404"
+
+          for path in /imobiliario /saude /consumidor; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "https://lp.souzaguedes.adv.br${path}")
+            echo "${path} -> ${code}"
+            test "$code" = "200"
+          done
+
+          # Headers de segurança (WDLC 7.1)
+          hdrs=$(curl -sSI --max-time 20 "https://lp.souzaguedes.adv.br/imobiliario")
+          echo "$hdrs" | grep -qi 'X-Frame-Options: SAMEORIGIN'
+          echo "$hdrs" | grep -qi 'X-Content-Type-Options: nosniff'
