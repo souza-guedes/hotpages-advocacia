@@ -32,7 +32,7 @@ $chrome = [
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
-    <link rel="stylesheet" href="/css/componentes.css">
+    <link rel="stylesheet" href="/css/componentes.css?v=5.1.5">
 </head>
 <body<?= $utmAttributes ?>>
 <div class="site">
