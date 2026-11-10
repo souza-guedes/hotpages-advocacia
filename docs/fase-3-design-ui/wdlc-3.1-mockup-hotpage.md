@@ -1,6 +1,6 @@
 # WDLC 3.1 — Mockup de Alta Fidelidade da HotPage de Atraso na Entrega do Imóvel
 
-> **Status:** Aguardando homologação dos sócios
+> **Status:** Aprovado pelos sócios em 10/11/2026
 > **Fase:** 3 — Design visual persuasivo com foco em credibilidade e mobile-first
 > **Sub-issue:** [#8](https://github.com/souza-guedes/hotpages-advocacia/issues/8)
 > **Épico Relacionado:** [#7](https://github.com/souza-guedes/hotpages-advocacia/issues/7)
@@ -75,7 +75,6 @@ Os textos dão forma ao layout. A copy final vem da #11.
 
 | Item | Responsável | Observação |
 | --- | --- | --- |
-| **Aprovação formal dos mockups** | Sócios | Critério de aceite da #8. A primeira rodada de ajustes dos sócios (botões de WhatsApp, prazo de tolerância, documentos e caminhos) já está aplicada. |
 | Rota desta página | Sócios / Fase 5 | Hoje `/imobiliario` em `config/pages.php` reúne usucapião, despejo, leilão e atraso. A #8 pede uma página só sobre atraso, como propõe a WDLC 1.1 ("uma página por subtema"). Definir o slug (por exemplo `/atraso-na-entrega`) e ajustar `config/pages.php`, `public/.htaccess` e os testes na Fase 5. |
 | Tema na mensagem do WhatsApp | Fase 5 | O protótipo usa "atraso na entrega do imóvel", como pede a #8. Em `config/pages.php` está "Direito Imobiliário". |
 | Copy final e respostas das perguntas | #11 | Textos atuais são provisórios. |
