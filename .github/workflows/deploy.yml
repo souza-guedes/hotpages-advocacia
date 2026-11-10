@@ -4,7 +4,7 @@
 #   domains/lp.souzaguedes.adv.br/src/          ← src/
 #   domains/lp.souzaguedes.adv.br/config/       ← config/
 #
-# Secrets: HOSTINGER_HOST, HOSTINGER_PORT, HOSTINGER_USER, HOSTINGER_SSH_KEY
+# Secrets: HOSTINGER_HOST, HOSTINGER_PORT, HOSTINGER_USER, HOSTINGER_SSH_KEY_B64
 
 name: Deploy Hostinger
 
@@ -29,17 +29,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.HOSTINGER_SSH_KEY }}
-
-      - name: Add Hostinger host key
+      - name: Setup SSH key
         env:
           HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
           HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_SSH_KEY_B64: ${{ secrets.HOSTINGER_SSH_KEY_B64 }}
         run: |
+          set -euo pipefail
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          # Chave em Base64 evita corrupção de newlines no secret multiline.
+          printf '%s' "$HOSTINGER_SSH_KEY_B64" | base64 -d > ~/.ssh/hostinger_deploy
+          chmod 600 ~/.ssh/hostinger_deploy
+          ssh-keygen -y -f ~/.ssh/hostinger_deploy >/dev/null
           ssh-keyscan -p "$HOSTINGER_PORT" -H "$HOSTINGER_HOST" >> ~/.ssh/known_hosts
 
       - name: Rsync to Hostinger
@@ -50,8 +52,8 @@ jobs:
           REMOTE_BASE: /home/u451023057/domains/lp.souzaguedes.adv.br
         run: |
           set -euo pipefail
-          SSH=(ssh -p "$HOSTINGER_PORT" -o IdentitiesOnly=yes)
-          RSYNC_SSH="ssh -p $HOSTINGER_PORT -o IdentitiesOnly=yes"
+          SSH=(ssh -i "$HOME/.ssh/hostinger_deploy" -p "$HOSTINGER_PORT" -o IdentitiesOnly=yes -o BatchMode=yes)
+          RSYNC_SSH="ssh -i $HOME/.ssh/hostinger_deploy -p $HOSTINGER_PORT -o IdentitiesOnly=yes -o BatchMode=yes"
           TARGET="${HOSTINGER_USER}@${HOSTINGER_HOST}"
 
           "${SSH[@]}" "$TARGET" "mkdir -p '$REMOTE_BASE/public_html' '$REMOTE_BASE/src' '$REMOTE_BASE/config'"
