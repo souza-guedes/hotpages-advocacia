@@ -1,0 +1,864 @@
+<meta charset="utf-8">
+<title>Hotpage Atraso na Entrega</title>
+<meta name="description" content="WDLC 3.1 — Mockup de alta fidelidade (mobile + desktop) da hotpage modelo de atraso na entrega do imóvel, Souza Guedes Advogados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Hotpage modelo das campanhas (atraso na entrega do imóvel).
+   Base visual: o design system do site institucional (WDLC 3.1 + mockups WDLC 3.2), reaproveitado sem alterações.
+   A página é uma só e sem menu: o visitante chega por anúncio, entende a situação e, se quiser, escolhe um canal.
+   Ritmo das faixas: papel (hero) · branco (situações) · petróleo-profundo (quem atende) · papel (documentos) · branco (perguntas) · petróleo-profundo (canais).
+   Regras de cor (auditoria WCAG 2.1 AA do WDLC 3.1): turquesa nunca é texto; latão só sobre fundo escuro; latão-escuro sobre papel/branco. */
+/* ---------- Base: design system do site institucional ---------- */
+:root{
+  color-scheme: light;
+  --turquesa:#5AA7A1; --petroleo:#1E5A56; --petroleo-profundo:#123B39; --tinta:#0E1E1D;
+  --papel:#F5F2EC; --nevoa:#E4EEEC; --texto-secundario:#4A5554; --texto-claro:#B9CFCC;
+  --latao:#C9A970; --latao-escuro:#7A5F33; --linha:#CFD8D6; --borda-campo:#6E7C7A; --branco:#FFFFFF;
+  --erro:#9B2C1F;   /* erro de formulário: 6,9:1 sobre branco — proposta para #22 */
+  --palco:#D9DFDD;  /* fundo do palco de revisão, fora do site */
+
+  --font-display:"Cinzel","Trajan Pro",Georgia,serif;
+  --font-titulo:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --font-sans:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s6:48px; --s10:80px; --s16:128px;
+  --r-sm:2px;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--palco);color:var(--tinta);font-family:var(--font-sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--petroleo);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- Barra de revisão (fora do mockup) ---------- */
+.review{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--tinta);color:var(--papel);
+  padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;font-size:14px}
+.review__id{font-family:var(--font-display);letter-spacing:.14em;font-size:12px;color:var(--latao);white-space:nowrap}
+.review__screen{display:flex;gap:8px;align-items:center;min-width:0;flex:1 1 260px}
+.review__screen label{color:var(--texto-claro);white-space:nowrap}
+.review select{background:#1b2e2c;color:var(--papel);border:1px solid #3c5250;border-radius:var(--r-sm);padding:6px 8px;min-width:0;max-width:100%;flex:1}
+.seg{display:inline-flex;border:1px solid #3c5250;border-radius:var(--r-sm);overflow:hidden}
+.seg button{background:transparent;border:0;padding:6px 12px;color:var(--texto-claro);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--papel);color:var(--tinta);font-weight:600}
+.review :focus-visible{outline-color:var(--turquesa)}
+.notes{background:#1b2e2c;color:var(--texto-claro);padding:8px 16px;font-size:13px;line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 18px}
+.notes b{color:var(--papel);font-weight:600}
+.notes code{font-family:ui-monospace,Consolas,monospace;color:var(--latao)}
+.stage{padding:24px 16px 48px;display:flex;justify-content:center}
+.frame{container-type:inline-size;container-name:site;background:var(--papel);color:var(--tinta);
+  width:1440px;flex:none;box-shadow:0 18px 50px rgba(14,30,29,.18);position:relative}
+.frame[data-vp="mobile"]{width:390px;border:8px solid var(--tinta);border-radius:28px;overflow:clip}
+
+/* ---------- Elementos de marca ---------- */
+/* Moldura aberta: fio de 1px com uma interrupção no lado esquerdo (assinatura do monograma) */
+.of{position:relative}
+.of::before{content:"";position:absolute;inset:var(--of-inset,0);border:1px solid var(--of-c,var(--tinta));pointer-events:none;transition:border-color .15s;
+  -webkit-mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat;
+          mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat}
+/* Selo: painel petróleo-profundo com moldura dupla (externa aberta, interna fechada) e fio de latão */
+.seal{background:var(--petroleo-profundo);position:relative;--of-c:var(--texto-claro);--of-inset:12% 16%;--of-a:40%;--of-b:56%}
+.seal::after{content:"";position:absolute;inset:18% 23%;border:1px solid var(--texto-claro);pointer-events:none}
+.sq{display:inline-block;width:10px;height:10px;background:var(--petroleo);flex:none}
+
+/* Composição do hero (reprodução da peça de marca) */
+/* mobile/tablet: só a ponta da composição aparece, no canto superior direito, acima do nome */
+.comp{position:absolute;top:0;right:-84px;width:230px;height:84px;margin:0}
+@container site (min-width:760px){.comp{right:-40px;width:400px;height:140px}}
+.comp > *{position:absolute;display:block}
+.comp__nevoa{left:0;top:15%;width:27%;height:33%;background:var(--nevoa);--of-inset:17% 12% 17% 12%;--of-a:30%;--of-b:72%}
+.comp__sq{left:17%;top:56%;width:10%;aspect-ratio:1;background:var(--petroleo)}
+.comp__bar{left:32.5%;top:17.5%;width:15.3%;height:65%;background:var(--turquesa)}
+.comp__panel{left:47.8%;top:0;right:0;bottom:0}
+@container site (min-width:1100px){
+  .comp{position:absolute;right:0;top:0;bottom:0;width:48%;height:auto;margin:0}
+}
+
+/* ---------- Site ---------- */
+.site{font-size:17px;line-height:27px}
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:var(--s2)}
+@container site (min-width:760px){.wrap{padding-inline:var(--s4)}}
+@container site (min-width:1100px){.wrap{padding-inline:var(--s6)}}
+
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-size:13px;line-height:16px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--latao-escuro);margin:0}
+.eyebrow::before{content:"";width:8px;height:8px;background:var(--petroleo);flex:none}
+.dark .eyebrow{color:var(--latao)}
+.dark .eyebrow::before{background:var(--turquesa)}
+.display{font-family:var(--font-display);font-weight:400;letter-spacing:.03em;font-size:30px;line-height:38px;margin:0;text-wrap:balance}
+@container site (min-width:760px){.display{font-size:44px;line-height:52px}}
+.h2,.h3{font-family:var(--font-titulo);font-weight:600;margin:0;text-wrap:balance}
+.h2{font-size:26px;line-height:34px;letter-spacing:-.01em}
+.h3{font-size:20px;line-height:28px}
+@container site (min-width:760px){.h2{font-size:34px;line-height:42px}.h3{font-size:22px;line-height:30px}}
+.lead{font-size:19px;line-height:29px;margin:0;max-width:62ch}
+@container site (min-width:760px){.lead{font-size:20px;line-height:30px}}
+.nota{font-size:14px;line-height:21px;color:var(--texto-secundario)}
+.dark{background:var(--petroleo-profundo);color:var(--papel)}
+.dark .nota,.dark .muted{color:var(--texto-claro)}
+.muted{color:var(--texto-secundario)}
+p{margin:0}
+.prose{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s2);max-width:66ch;align-content:start}
+
+.section{padding-block:var(--s10)}
+@container site (min-width:1100px){.section{padding-block:var(--s16)}}
+.section--tight{padding-block:var(--s6)}
+@container site (min-width:1100px){.section--tight{padding-block:var(--s10)}}
+.section__head{display:grid;gap:var(--s2);margin-bottom:var(--s6);max-width:70ch}
+.more{margin-top:var(--s4)}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s1);font-family:var(--font-sans);font-size:16px;line-height:20px;font-weight:600;
+  padding:14px 24px;border-radius:var(--r-sm);border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s}
+.btn--primary{background:var(--petroleo);color:var(--branco)}
+.btn--primary:hover{background:var(--petroleo-profundo)}
+.btn--ghost{border-color:var(--petroleo);color:var(--petroleo);background:transparent}
+.btn--ghost:hover{background:var(--branco)}
+.dark .btn--light{background:var(--papel);color:var(--tinta)}
+.dark .btn--light:hover{background:var(--branco)}
+.dark .btn--ghost{border-color:var(--texto-claro);color:var(--papel)}
+.dark .btn--ghost:hover{background:rgba(245,242,236,.08)}
+.dark :focus-visible{outline-color:var(--turquesa)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.link{color:var(--petroleo);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.link:hover{text-decoration-thickness:2px}
+.dark .link{color:var(--papel)}
+.arrow::after{content:" →"}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* Header */
+.hdr{background:var(--papel);border-bottom:1px solid var(--linha);position:sticky;top:var(--hdr-top,0px);z-index:5;transition:box-shadow .2s ease}
+.hdr.is-stuck{box-shadow:0 8px 24px -12px rgba(14,30,29,.28)}
+.hdr__in{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:72px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--tinta)}
+.logo-wm{display:block;width:136px;height:28px;color:currentColor}
+@container site (min-width:1100px){.hdr .logo-wm{width:156px;height:32px}}
+/* Hero */
+.hero{position:relative;padding-top:108px;overflow:clip}
+@container site (min-width:760px){.hero{padding-top:172px}}
+.hero__txt{display:grid;gap:var(--s3)}
+.wordmark{font-family:var(--font-display);font-weight:400;font-size:60px;line-height:.98;letter-spacing:.02em;margin:0;color:var(--tinta)}
+.wordmark small{display:block;font-size:13px;letter-spacing:.5em;color:var(--texto-secundario);margin-top:18px;line-height:1}
+.claim{font-family:var(--font-titulo);font-weight:600;font-size:22px;line-height:30px;margin:0;max-width:24ch;text-wrap:balance}
+.hero .lead{color:var(--texto-secundario);max-width:48ch}
+.hero__ctas{display:flex;flex-wrap:wrap;gap:12px}
+.hero__ctas .btn{flex:1 1 auto}
+.hero__id{display:flex;flex-wrap:wrap;gap:6px 28px;padding-top:var(--s3);border-top:1px solid var(--linha);font-size:15px;color:var(--texto-secundario)}
+.hero__id b{color:var(--tinta);font-weight:600}
+@container site (min-width:760px){.wordmark{font-size:92px}}
+@container site (min-width:1100px){
+  .hero{padding-block:var(--s10) var(--s16);min-height:680px}
+  .hero__txt{max-width:600px}
+  .wordmark{font-size:112px}
+  .claim{font-size:26px;line-height:34px}
+  .hero__ctas .btn{flex:none}
+}
+/* 2 · Áreas — a moldura aberta */
+.areas{display:grid;gap:var(--s3)}
+@container site (min-width:760px){.areas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:1100px){.areas--4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.acard{--of-c:var(--borda-campo);--of-a:22%;--of-b:46%;padding:var(--s4) var(--s3);display:flex;flex-direction:column;gap:var(--s2);text-decoration:none;color:inherit;background:var(--branco)}
+.acard:hover{--of-c:var(--petroleo)}
+.acard:hover::before{border-width:2px}
+.acard:hover .acard__more{text-decoration-thickness:2px}
+.acard__icon{width:48px;height:48px;background:var(--petroleo);color:var(--branco);display:grid;place-items:center;flex:none}
+.acard__icon svg{width:24px;height:24px}
+.acard p{color:var(--texto-secundario)}
+.acard__more{margin-top:auto;color:var(--petroleo);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.acard--wide{gap:var(--s3)}
+.acard--wide ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:16px;line-height:24px}
+.acard--wide li{padding-left:18px;position:relative}
+.acard--wide li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:1px;background:var(--latao-escuro)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:13px;line-height:18px;font-weight:600;padding:3px 9px;border:1px solid var(--borda-campo);color:var(--petroleo);border-radius:var(--r-sm);background:transparent}
+.dark .tag{border-color:var(--texto-claro);color:var(--papel)}
+/* 3 · Corpo jurídico — o painel profundo com selo */
+.team .section__head{margin-bottom:var(--s6)}
+/* foto ao lado do texto em todos os formatos; os sócios se separam pelo espaço, sem fios */
+.people{display:grid;gap:var(--s4)}
+@container site (min-width:760px){.people{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s6)}}
+.person{display:grid;grid-template-columns:96px minmax(0,1fr);gap:var(--s2);align-items:center}
+.person__txt{display:grid;gap:4px;min-width:0}
+.person .h3{font-size:18px;line-height:24px}
+.person .person__oab{font-size:14px}
+.person p.bio{margin-top:4px;font-size:15px;line-height:22px;text-wrap:pretty}
+/* foto pequena: só a moldura aberta externa, fina e por cima da foto (a interna sairia carregada) */
+.person .portrait .seal::after{display:none}
+.person .portrait .seal::before{z-index:2;--of-inset:6px;--of-a:34%;--of-b:62%;--of-c:rgba(245,242,236,.55)}
+.person .portrait .seal img{-webkit-mask-image:none;mask-image:none;object-position:50% 0}
+/* desktop: retrato maior, de moldura dupla */
+@container site (min-width:1100px){
+  .person{grid-template-columns:200px minmax(0,1fr);gap:var(--s3)}
+  .person__txt{gap:6px}
+  .person .h3{font-size:22px;line-height:30px}
+  .person .person__oab{font-size:15px}
+  .person p.bio{font-size:16px;line-height:24px}
+  .person .portrait .seal::before,.person .portrait .seal::after{display:block}
+  .person .portrait .seal::before{z-index:auto;--of-inset:7% 9%;--of-a:42%;--of-b:56%;--of-c:var(--texto-claro)}
+  .person .portrait .seal img{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,transparent 100%)}
+}
+.pseal{aspect-ratio:1;max-width:100%;background:var(--petroleo);--of-inset:10%;--of-a:36%;--of-b:60%;display:grid;place-items:center}
+.pseal span{font-family:var(--font-display);font-size:30px;color:var(--papel);letter-spacing:.06em}
+.person__oab{font-family:var(--font-titulo);font-weight:600;font-size:15px;color:var(--texto-claro);letter-spacing:.02em}
+.portrait{display:grid;gap:10px;align-content:start}
+.portrait .seal{aspect-ratio:4/5;max-width:100%;--of-inset:7% 9%;--of-a:42%;--of-b:56%}
+.portrait .seal::after{inset:11% 14%}
+.portrait .seal{overflow:hidden}
+.portrait .seal{background:radial-gradient(120% 70% at 50% 28%,var(--petroleo) 0%,var(--petroleo-profundo) 72%)}
+.portrait .seal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;z-index:1;-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,transparent 100%)}
+.dark .portrait .seal{box-shadow:0 0 0 1px rgba(185,207,204,.28)}
+/* 4 · Artigos — a névoa com moldura aberta, só com texto tinta */
+.notice{background:var(--nevoa);color:var(--tinta);padding:var(--s4) var(--s4) var(--s4) var(--s6);display:grid;gap:8px;--of-c:var(--tinta);--of-inset:12px;--of-a:30%;--of-b:70%;font-size:16px;line-height:25px}
+.notice b{font-family:var(--font-titulo);font-weight:600;font-size:17px}
+/* 5 · CTA final — turquesa ancorada no petróleo */
+.cta{position:relative;padding-block:var(--s10)}
+.cta__bar{position:absolute;top:-40px;right:var(--s2);width:56px;height:96px;background:var(--turquesa)}
+@container site (min-width:1100px){.cta{padding-block:var(--s16)}.cta__bar{right:12%;width:96px;height:160px;top:-64px}}
+.cta__in{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.cta__in{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:var(--s10);align-items:start}}
+.cta .h2{color:var(--papel)}
+/* Canais agrupados por assunto: "Fale com o escritório" (remoto) e "Visite a sede" (presencial) */
+.cgroups{display:grid;gap:var(--s10)}
+@container site (min-width:760px){.cgroups{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:760px){.cgroups--stack{grid-template-columns:minmax(0,1fr);gap:64px}}
+.cgroup{display:grid;gap:var(--s3);align-content:start;padding-top:var(--s3);border-top:1px solid var(--tinta)}
+.dark .cgroup{border-top-color:var(--latao)}
+.cgroup__t{font-family:var(--font-display);font-weight:500;font-size:14px;line-height:18px;letter-spacing:.16em;text-transform:uppercase;margin:0}
+.channels{display:grid;gap:var(--s3);margin:0}
+.channel{display:grid;gap:6px}
+.channel dt{display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-secundario);font-weight:600}
+.channel dt svg{width:16px;height:16px;flex:none;color:var(--petroleo)}
+.channel dd{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;padding-left:24px}
+.channel strong{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px;overflow-wrap:break-word}
+.dark .channel dt{color:var(--texto-claro)}
+.dark .channel dt svg{color:var(--turquesa)}
+.copy{background:transparent;border:0;padding:0;color:var(--petroleo);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.dark .copy{color:var(--papel)}
+/* Detalhe de área */
+.detail{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.detail{grid-template-columns:minmax(0,1fr) 360px;gap:var(--s10);align-items:start}}
+.detail__main{display:grid;gap:var(--s10);min-width:0}
+.block{display:grid;gap:var(--s2)}
+.list{margin:0;padding:0;list-style:none;display:grid}
+.list li{padding:14px 0 14px 28px;border-top:1px solid var(--linha);position:relative}
+.list li::before{content:"";position:absolute;left:0;top:23px;width:8px;height:8px;background:var(--petroleo)}
+/* Faixas de fundo alternadas nas páginas internas (mesmo ritmo da Home: papel · branco · petróleo-profundo) */
+.band--branco{background:var(--branco);border-block:1px solid var(--linha)}
+.section > .chapter{padding-block:0;border-top:0}
+/* Perfis em fundo escuro */
+.dark .facts div{border-top-color:rgba(185,207,204,.3)}
+.dark .facts dt{color:var(--texto-claro)}
+.dark .person__oab--light{color:var(--latao)}
+/* Contato */
+.ccards{display:grid;gap:var(--s3)}
+@container site (min-width:760px){.ccards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ccard{margin:0;padding:var(--s4) var(--s3);background:var(--papel);display:grid;align-content:start;--of-c:var(--borda-campo);--of-inset:0;--of-a:30%;--of-b:56%}
+.ccard .channel{gap:10px}
+.ccard .channel dd{padding-left:0}
+.ccard .channel strong{font-size:20px;line-height:28px}
+.contact-aside{display:grid;gap:var(--s6);align-content:start}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:var(--s3);counter-reset:st}
+.steps li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px var(--s2);counter-increment:st;padding-top:var(--s3);border-top:1px solid var(--linha)}
+.steps li::before{content:counter(st,decimal-leading-zero);grid-row:span 2;font-family:var(--font-display);font-size:22px;line-height:28px;color:var(--latao-escuro)}
+.steps b{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px}
+.steps span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+/* Rodapé */
+.ftr{background:var(--tinta);color:var(--papel);padding-block:var(--s10) var(--s4);font-size:15px;line-height:23px;border-top:1px solid rgba(90,167,161,.4)}
+.ftr__grid{display:grid;gap:var(--s6)}
+@container site (min-width:760px){.ftr__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container site (min-width:1100px){.ftr__grid{grid-template-columns:minmax(0,4fr) minmax(0,3fr) minmax(0,3fr) minmax(0,2fr)}}
+.ftr h2{font-family:var(--font-display);font-weight:500;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--latao);margin:0 0 12px}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ftr a{color:var(--papel);text-decoration:none}
+.ftr a:hover{text-decoration:underline;text-underline-offset:3px}
+.ftr .muted{color:var(--texto-claro)}
+.ftr__oab li{display:grid}
+.ftr__oab span{color:var(--texto-claro);font-size:14px}
+.ftr__legal{margin-top:var(--s6);padding-top:var(--s3);border-top:1px solid rgba(185,207,204,.25);display:grid;gap:12px;color:var(--texto-claro);font-size:14px;line-height:21px}
+.ftr__legal p{max-width:110ch}
+.ftr .brand{color:var(--papel);flex-direction:column;align-items:flex-start;gap:var(--s2)}
+.ftr .logo-mono{width:64px;height:36px;color:var(--turquesa)}
+.ftr .logo-wm{width:150px;height:31px}
+.ftr :focus-visible{outline-color:var(--turquesa)}
+
+/* Banner de cookies (não bloqueante) */
+.cookie{position:sticky;bottom:0;z-index:6;background:var(--branco);border-top:1px solid var(--linha);box-shadow:0 -8px 24px rgba(14,30,29,.08)}
+.cookie__in{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding-block:14px}
+.cookie p{font-size:14px;line-height:21px;max-width:80ch;flex:1 1 280px}
+.cookie .btn{padding:10px 16px;font-size:15px}
+
+.screen[hidden],[hidden]{display:none!important}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 16px;font-size:14px;z-index:60;border-radius:var(--r-sm)}
+
+/* ---------- Hotpage ---------- */
+.review__title{color:var(--texto-claro);font-size:14px;flex:1 1 260px;min-width:0}
+.review__title b{color:var(--papel);font-weight:600}
+
+/* Cabeçalho: só a marca e o atalho para os canais (sem menu, a página é única) */
+.hdr__cta{display:inline-flex;padding:10px 14px;font-size:15px}
+.hdr__cta .lg{display:none}
+@container site (min-width:760px){.hdr__cta .sm{display:none}.hdr__cta .lg{display:inline}}
+@container site (min-width:1100px){.hdr__cta{padding:11px 18px;font-size:16px}.hdr__in{min-height:88px}}
+
+/* Hero: área de atuação, a situação do visitante e chamadas para entender.
+   O título usa a fonte de assinatura da marca (Cinzel, como os títulos de página do site), sem destaque de cor. */
+@container site (min-width:1100px){.hero .display{font-size:44px;line-height:54px}}
+.hero__txt .lead{max-width:52ch}
+@container site (min-width:1100px){.hero__txt{max-width:580px}.hero{min-height:640px}}
+
+/* Situações: lista numerada no estilo dos valores do site (fio tinta em cima), sem cartões nem ícones.
+   Grade de 2 × 2 com bastante respiro, para cada situação ler como um bloco separado; o número segue o padrão dos passos (Cinzel, latão-escuro). */
+.sits{display:grid;gap:var(--s4);counter-reset:sit}
+@container site (min-width:760px){.sits{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s6) var(--s6)}}
+@container site (min-width:1100px){.sits{max-width:1040px;margin-inline:auto;gap:var(--s6)}}
+/* só o cabeçalho é centralizado; os itens ficam alinhados à esquerda */
+#situacoes .section__head{margin-inline:auto;text-align:center;justify-items:center}
+/* cada situação é um cartão branco com a moldura aberta da marca (como "O que reunir" e os canais) e o número no quadrado petróleo (como os caminhos); igual no celular e no desktop */
+.sit{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-content:start;padding:var(--s3);background:var(--branco);counter-increment:sit;
+  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%}
+@container site (min-width:1100px){.sit{padding:var(--s4)}}
+/* o número fica no ::after (o ::before é a moldura aberta), levado para a frente com order */
+.sit::after{content:counter(sit,decimal-leading-zero);order:-1;justify-self:start;width:40px;height:40px;display:grid;place-items:center;margin-bottom:var(--s1);
+  background:var(--petroleo);color:var(--branco);font-family:var(--font-display);font-size:16px;line-height:1;letter-spacing:.04em}
+.sit h3{font-family:var(--font-titulo);font-weight:600;font-size:19px;line-height:26px;margin:0}
+@container site (min-width:1100px){.sit h3{font-size:20px;line-height:28px}}
+.sit p{color:var(--texto-secundario);max-width:44ch}
+.sits-foot{margin:var(--s6) auto 0;max-width:70ch;text-align:center}
+.sits-dots{display:none}
+
+/* Documentos e caminhos: dois assuntos, dois blocos visuais.
+   "O que reunir" é um cartão branco com moldura aberta (checklist); "Caminhos possíveis" fica fora dele, como linha do tempo numerada. */
+.docs{display:grid;gap:var(--s10)}
+@container site (min-width:1100px){.docs{grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:var(--s16);align-items:start}}
+.dblock__head{display:grid;gap:6px;margin-bottom:var(--s3)}
+.dblock__head p{color:var(--texto-secundario)}
+.kit{background:var(--branco);padding:var(--s4) var(--s3);--of-c:var(--borda-campo);--of-a:18%;--of-b:34%}
+@container site (min-width:760px){.kit{padding:var(--s6) var(--s4)}}
+.kit .dblock__head{padding-bottom:var(--s3);border-bottom:1px solid var(--tinta)}
+.checks{list-style:none;margin:0;padding:0;display:grid}
+.checks li{display:grid;grid-template-columns:8px minmax(0,1fr);gap:2px 14px;padding-block:14px;border-bottom:1px solid var(--linha)}
+.checks li:last-child{border-bottom:0;padding-bottom:0}
+.checks li::before{content:"";grid-row:span 2;width:8px;height:8px;margin-top:8px;background:var(--petroleo)}
+.checks b{font-weight:600}
+.checks span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+/* linha do tempo: quadrados numerados ligados por um fio */
+.paths{list-style:none;margin:0;padding:0;display:grid;counter-reset:st}
+.paths li{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:6px var(--s3);counter-increment:st;padding-bottom:var(--s4)}
+.paths li:last-child{padding-bottom:0}
+.paths li::before{content:counter(st,decimal-leading-zero);grid-row:span 3;width:48px;height:48px;display:grid;place-items:center;background:var(--petroleo);color:var(--branco);
+  font-family:var(--font-display);font-size:18px;letter-spacing:.04em;position:relative;z-index:1}
+.paths li:not(:last-child)::after{content:"";position:absolute;left:23.5px;top:48px;bottom:0;width:1px;background:var(--borda-campo)}
+.paths b{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px;padding-top:11px}
+.paths span{color:var(--texto-secundario);font-size:16px;line-height:24px}
+.paths .link{justify-self:start;margin-top:6px;font-size:16px;line-height:24px}
+
+/* Perguntas frequentes (editorial clara): título, aviso e ajuda numa coluna à esquerda; accordion à direita */
+.acc{border-top:1px solid var(--tinta)}
+.acc details{border-bottom:1px solid var(--linha)}
+.acc summary{list-style:none;display:flex;justify-content:space-between;gap:var(--s3);align-items:center;padding:22px 0;cursor:pointer;
+  font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+@container site (min-width:760px){.acc summary{font-size:18px;line-height:27px;padding:24px 0}}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";flex:none;width:10px;height:10px;margin-right:6px;border-right:1.5px solid var(--petroleo);border-bottom:1.5px solid var(--petroleo);
+  transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+.acc details[open] summary::after{transform:translateY(3px) rotate(-135deg)}
+.acc summary:hover,.acc details[open] summary{color:var(--petroleo)}
+.acc details > div{padding:0 0 var(--s3);display:grid;gap:12px;color:var(--texto-secundario);max-width:64ch}
+/* aviso informativo: linha discreta embaixo das perguntas */
+.faq-note{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:21px;color:var(--texto-secundario)}
+.faq-note svg{width:18px;height:18px;flex:none;color:var(--petroleo);margin-top:1px}
+.faq-note b{color:var(--tinta);font-weight:600}
+.faq-help{display:grid;gap:8px;padding:var(--s3);background:var(--papel);--of-c:var(--borda-campo);--of-a:30%;--of-b:56%}
+.faq-help b{font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+.faq-help .link{justify-self:start;margin-top:4px}
+.faq-ed{display:grid;gap:var(--s6)}
+@container site (min-width:1100px){.faq-ed{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:var(--s10);align-items:start}}
+.faq-ed__side{display:grid;gap:var(--s6);align-content:start}
+.faq-ed__main{display:grid;gap:var(--s4);min-width:0}
+/* celular: "Não encontrou sua dúvida?" vem depois das perguntas, não antes */
+@container site (max-width:1099px){.faq-ed__side{display:contents}.faq-ed__main{order:1}.faq-help{order:2}}
+.faq-ed__side .section__head{margin:0}
+
+/* Quem atende: a faixa escura "Corpo Jurídico" do site, logo depois das situações (a credibilidade aparece cedo) */
+/* contato: faixa na largura da seção, logo abaixo dos sócios, com o fundo petróleo */
+.team__cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s3);margin-top:var(--s6);padding:var(--s3);background:var(--petroleo)}
+.team__cta p{font-family:var(--font-titulo);font-weight:600;font-size:18px;line-height:26px}
+@container site (max-width:759px){.team__cta .btn{width:100%}}
+@container site (min-width:760px){.team .section__head .muted{max-width:none}}
+
+/* Canais de atendimento: bloco final "Atendimento" do site (petróleo-profundo + barra turquesa).
+   Uma sequência só, alinhada à esquerda, na mesma grade de 3 colunas: cabeçalho com o horário → três canais iguais → o que acontece depois do contato. */
+/* seção toda centralizada: cabeçalho, conteúdo dos cartões e passos */
+.canais__head{display:grid;gap:var(--s2);justify-items:center;text-align:center;max-width:720px;margin-inline:auto}
+.hours{display:inline-flex;gap:10px;align-items:center;margin-top:var(--s1);padding:8px 14px;border:1px solid rgba(185,207,204,.35);color:var(--texto-claro);font-size:15px;line-height:22px;text-align:left}
+.hours svg{width:18px;height:18px;flex:none;color:var(--turquesa)}
+.hours b{color:var(--papel);font-weight:600}
+/* os três canais com o mesmo peso: mesmo cartão, mesmo botão */
+.chs{display:grid;gap:var(--s3);margin-top:var(--s6)}
+@container site (min-width:760px){.chs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin:0;padding:var(--s4) var(--s3);--of-c:rgba(185,207,204,.45);--of-a:28%;--of-b:50%}
+.ch dt{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-claro);font-weight:600}
+.ch dt svg{width:18px;height:18px;flex:none;color:var(--turquesa)}
+.ch dd{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px;flex:1}
+.ch strong{font-family:var(--font-titulo);font-weight:600;font-size:20px;line-height:28px;overflow-wrap:break-word}
+.ch .act{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:center;margin-top:auto;padding-top:var(--s1)}
+.ch .btn{padding:12px 18px;font-size:15px}
+/* depois do contato: mesma grade dos cartões, cada passo embaixo de uma coluna */
+.after{margin-top:var(--s10);padding-top:var(--s6);border-top:1px solid rgba(185,207,204,.3)}
+.after summary{list-style:none;display:flex;justify-content:center;align-items:center;gap:var(--s2)}
+.after summary::-webkit-details-marker{display:none}
+.after > .steps{margin-top:var(--s6)}
+/* no desktop é só o título do bloco (sempre aberto); no celular vira um item recolhível, fechado de início */
+@container site (min-width:760px){.after summary{pointer-events:none}}
+.after .cgroup__t{color:var(--latao);text-align:center}
+.after .steps{gap:var(--s3)}
+.after .steps li{grid-template-columns:minmax(0,1fr);justify-items:center;align-content:start;text-align:center;gap:6px}
+.after .steps li::before{grid-row:auto;margin-bottom:4px}
+.after .steps span{max-width:32ch}
+@container site (min-width:760px){.after .steps{grid-template-columns:repeat(3,minmax(0,1fr))}.after .steps li{border-top:0;padding-top:0}}
+.dark .steps li{border-top-color:rgba(185,207,204,.3)}
+.dark .steps li::before{color:var(--texto-claro)}
+.dark .steps span{color:var(--texto-claro)}
+
+/* Rodapé compacto */
+@container site (min-width:1100px){.ftr__grid{grid-template-columns:minmax(0,4fr) minmax(0,3fr) minmax(0,3fr) minmax(0,2fr)}}
+
+/* Celular: a mesma página, mais compacta (menos rolagem, nenhum texto a menos) */
+@container site (max-width:759px){
+  .wrap{padding-inline:24px}
+  .section,.cta{padding-block:64px}
+  /* hero: título e texto menores, para quebrar menos linhas na tela pequena, com respiro entre os blocos */
+  .hero{padding-top:112px;padding-bottom:var(--s6)}
+  .hero__txt{gap:var(--s3)}
+  .hero .eyebrow{margin-bottom:4px}
+  .hero .display{font-size:24px;line-height:34px;letter-spacing:.01em}
+  .hero .lead{font-size:17px;line-height:27px}
+  .hero__ctas{margin-top:var(--s2);gap:var(--s2)}
+  .hero__id{font-size:14px;margin-top:var(--s3);padding-top:var(--s3);gap:10px 28px}
+  /* situações: carrossel com deslize lateral (sem rolagem automática); o próximo item aparece na borda para indicar que há mais */
+  .sits{display:grid;grid-auto-flow:column;grid-auto-columns:82%;gap:var(--s3);overflow-x:auto;scroll-snap-type:x mandatory;
+    margin-inline:-24px;padding-inline:24px;scroll-padding-inline:24px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .sits::-webkit-scrollbar{display:none}
+  .sit{scroll-snap-align:start}
+  .sit h3{font-size:18px;line-height:25px}
+  .sits-dots{display:flex;justify-content:center;gap:8px;margin-top:var(--s3)}
+  .sits-dots span{width:8px;height:8px;background:var(--linha);transition:background .2s}
+  .sits-dots span.on{background:var(--petroleo)}
+  .sits-foot{margin-top:var(--s3)}
+  .section__head{margin-bottom:var(--s4)}
+  /* documentos: menos espaço interno no cartão e na linha do tempo */
+  .docs{gap:var(--s6)}
+  .kit{padding:var(--s3) var(--s2)}
+  .checks li{padding-block:12px}
+  .paths li{padding-bottom:var(--s3)}
+  /* canais: cada canal numa linha (rótulo e contato à esquerda, botão à direita), os três iguais */
+  .chs{gap:12px;margin-top:var(--s4)}
+  .ch{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px var(--s2);text-align:left;padding:var(--s2) 20px}
+  .ch dt{justify-content:flex-start;font-size:12px}
+  .ch dd{display:contents}
+  .ch strong{grid-column:1;font-size:17px;line-height:24px}
+  .ch .act{grid-column:2;grid-row:1 / span 2;margin:0;padding:0}
+  .ch .btn{padding:10px 12px;font-size:14px;width:132px;justify-content:center}
+  /* canais: cabeçalho mais leve; o horário vira uma linha discreta e "Depois do primeiro contato" fica recolhido */
+  .canais__head{gap:12px}
+  .canais__head .muted{font-size:16px;line-height:24px}
+  .hours{border:0;padding:0;margin-top:4px;font-size:14px;line-height:20px;align-items:flex-start;text-align:center;max-width:32ch}
+  .hours svg{display:none}
+  .after{margin-top:var(--s4);padding-top:0;border-top:0;border-bottom:1px solid rgba(185,207,204,.3)}
+  .after summary{justify-content:space-between;padding:18px 0;border-top:1px solid rgba(185,207,204,.3);cursor:pointer}
+  .after summary::after{content:"";flex:none;width:10px;height:10px;margin-right:6px;border-right:1.5px solid var(--turquesa);border-bottom:1.5px solid var(--turquesa);
+    transform:translateY(-3px) rotate(45deg);transition:transform .2s}
+  .after[open] summary::after{transform:translateY(3px) rotate(-135deg)}
+  .after > .steps{margin-top:0;padding-bottom:var(--s3)}
+  /* passos no celular: número ao lado do título, como uma lista, em vez de empilhados e centralizados */
+  /* perguntas: só as perguntas à vista (todas fechadas), linhas mais baixas e aviso menor */
+  .faq-ed{gap:var(--s4)}
+  .faq-ed__main{gap:var(--s3)}
+  .acc summary{padding:16px 0;font-size:16px;line-height:23px}
+  .acc details > div{font-size:16px;line-height:24px}
+  .faq-note{font-size:13px;line-height:19px}
+  .faq-note svg{width:16px;height:16px}
+  .after .steps{gap:var(--s2)}
+  .after .steps li{grid-template-columns:40px minmax(0,1fr);justify-items:start;text-align:left;gap:2px 12px;padding-top:var(--s2)}
+  .after .steps li::before{grid-row:span 2;margin:0}
+  .after .cgroup__t{text-align:left}
+  /* rodapé: sede e escritório lado a lado; contato na linha inteira */
+  .ftr{padding-top:var(--s6)}
+  .ftr__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4) var(--s3)}
+  .ftr__grid > :first-child,.ftr__grid > :nth-child(3){grid-column:1 / -1}
+  .ftr__grid > :nth-child(3){order:1}
+  .ftr__legal{margin-top:var(--s4)}
+}
+/* Documentos e caminhos no celular e no tablet: abas "O que reunir" / "Caminhos possíveis", um assunto por vez */
+.dtabs{display:none}
+@container site (max-width:1099px){
+  .dtabs{display:grid;grid-template-columns:1fr 1fr;margin-bottom:var(--s3);border:1px solid var(--petroleo)}
+  .dtabs button{appearance:none;border:0;background:transparent;color:var(--petroleo);font:600 15px/20px var(--font-titulo);padding:12px 8px;cursor:pointer}
+  .dtabs button[aria-selected="true"]{background:var(--petroleo);color:var(--branco)}
+  .dtabs button:focus-visible{outline:2px solid var(--petroleo);outline-offset:2px}
+  .docs[data-tab="kit"] .dpaths,.docs[data-tab="paths"] .kit{display:none}
+  .docs .dblock__head .h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .dpaths{padding-top:var(--s1)}
+}
+/* Perguntas no celular: a seção de canais vem logo depois, então o atalho "Não encontrou sua dúvida?" fica só no desktop */
+@container site (max-width:1099px){.faq-help{display:none}}
+
+/* Banner de cookies: aceitar e recusar com o mesmo peso visual (tags só depois do aceite) */
+.cookie__btns{display:flex;gap:10px;flex-wrap:wrap}
+.cookie__btns .btn{min-width:112px}
+</style>
+
+<!-- ======= Barra de revisão ======= -->
+<div class="review" role="region" aria-label="Controles de revisão do protótipo">
+  <span class="review__id">WDLC 3.1 · HOTPAGE</span>
+  <span class="review__title"><b>Atraso na entrega do imóvel</b> · modelo das hotpages</span>
+  <div class="seg" role="group" aria-label="Largura do mockup">
+    <button type="button" data-vp="mobile" aria-pressed="false">Mobile 390</button>
+    <button type="button" data-vp="desktop" aria-pressed="true">Desktop 1440</button>
+  </div>
+</div>
+<div class="notes" id="notes">
+  <span><b>Rota</b> <code>/imobiliario</code> hoje; o slug desta página é definido na Fase 5</span>
+  <span>Sem formulário: o contato é só pelos canais oficiais (WDLC 1.2, seção 5)</span>
+  <span>Textos provisórios; a copy final vem da #11</span>
+</div>
+
+<div class="stage" id="stage">
+<div class="frame" id="frame" data-vp="desktop">
+<div class="site">
+<!-- Logos oficiais (vetor extraído de "Souza Guedes.pdf") -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><path id="wfont_4_54" d="M.06100464 .041000368C.059000654 .05032857 .057998659 .06832377 .057998659 .09498596 .057998659 .121658328 .06299845 .1499939 .07299805 .17999268H.08200073C.081329349 .17266846 .08099365 .16533916 .08099365 .15800476 .08099365 .117335 .09332784 .08350118 .117996219 .056503297 .1426646 .029505412 .17533367 .01600647 .21600342 .01600647 .25800578 .01600647 .2925059 .028671265 .31950379 .054000856 .34650169 .079330448 .3600006 .11116028 .3600006 .14949036 .3600006 .18783061 .34700013 .21899922 .32099916 .24299622L.1289978 .42100526C.09299723 .45433045 .07499695 .49465943 .07499695 .5419922 .07499695 .58933517 .09083048 .62983706 .12249756 .6634979 .15416463 .697169 .19700115 .7140045 .25100709 .7140045 .27633668 .7140045 .30500285 .7106679 .33700563 .70399478H.37600709V.58099368H.3670044C.3670044 .6123352 .35617066 .6373393 .33450318 .65600588 .3128357 .6746724 .28499858 .68400576 .25099183 .68400576 .21699524 .68400576 .1884969 .67266848 .16549683 .6499939 .14249675 .6273295 .1309967 .598999 .1309967 .56500247 .1309967 .53100588 .14433289 .5016734 .17100525 .477005L.36799623 .29499818C.40133158 .264328 .41799928 .22232564 .41799928 .16899109 .41799928 .11566671 .40099589 .07183329 .36698915 .037490846 .33299256 .0031585694 .2876638-.014007568 .23100281-.014007568 .20166524-.014007568 .17049663-.009506226 .13749695-.00050354006 .104497279 .0084991459 .07899984 .02233378 .06100464 .041000368Z"/><path id="wfont_4_82" d="M.21800232 .5744934C.2693329 .6008301 .3258311 .6139984 .38749696 .6139984 .4491628 .6139984 .505661 .6008301 .5569916 .5744934 .60833236 .54816696 .6491699 .5110016 .6795044 .46299745 .70983889 .41500346 .7250061 .360672 .7250061 .30000306 .7250061 .2393341 .70983889 .18499756 .6795044 .13699341 .6491699 .08899943 .60833236 .051834108 .5569916 .025497437 .505661-.0008392334 .45299278-.014007568 .39898683-.014007568 .34499107-.014007568 .29732768-.00634257 .2559967 .008987427 .21466573 .024327597 .17883301 .04566447 .14849854 .07299805 .11816406 .10033163 .09416199 .13366191 .07649231 .17298889 .058832807 .21232605 .05000305 .25849406 .05000305 .31149293 .05000305 .36450196 .06517029 .41500346 .09550476 .46299745 .12583924 .5110016 .16667176 .54816696 .21800232 .5744934M.19949341 .09550476C.24982707 .0425059 .31232707 .01600647 .3869934 .01600647 .46165977 .01600647 .5243276 .0425059 .57499697 .09550476 .6256663 .14850362 .651001 .21666973 .651001 .30000306 .651001 .3833364 .6256663 .45150248 .57499697 .50450137 .5243276 .5575002 .46165977 .58399966 .3869934 .58399966 .31232707 .58399966 .24982707 .5575002 .19949341 .50450137 .14915975 .45150248 .12399292 .3833364 .12399292 .30000306 .12399292 .21666973 .14915975 .14850362 .19949341 .09550476Z"/><path id="wfont_4_88" d="M.6649933 .58999636H.6499939C.6319987 .58999636 .6183319 .5829976 .60899356 .56900027 .6049957 .5629985 .6026662 .55599978 .602005 .54800418V.21099854C.602005 .1416626 .579834 .0868276 .53549197 .04649353 .49116007 .0061594645 .43032838-.014007568 .35299684-.014007568 .27566529-.014007568 .21466573 .0059916179 .16999817 .04598999 .12533061 .085998538 .102996829 .14067078 .102996829 .21000672V.5469971C.102996829 .5590007 .09832764 .5691681 .08898926 .5774994 .07966105 .5858307 .06832886 .58999636 .054992677 .58999636H.039993287V.6000061H.22999573V.58999636H.21499634C.20167034 .58999636 .19033814 .5858307 .18099976 .5774994 .17167156 .5691681 .16700745 .5590007 .16700745 .5469971V.22200012C.16700745 .15733338 .18350728 .10633341 .21650696 .069000247 .24950664 .031667074 .2961731 .013000488 .35650636 .013000488 .4168396 .013000488 .46516929 .03066508 .50149539 .06599426 .5378316 .10133362 .55599978 .14966838 .55599978 .21099854V.5469971C.55532839 .55966189 .55049136 .56999209 .54148867 .5779877 .53249618 .58599349 .5213318 .58999636 .5079956 .58999636H.49299623V.6000061H.6649933V.58999636Z"/><path id="wfont_4_93" d="M.07600403 .5200043V.5039978H.06500244V.6170044C.07366943 .6129964 .08950297 .609492 .11250305 .6064911 .13550313 .60350039 .15700276 .6016693 .17700196 .6009979H.40699769C.42766825 .6009979 .45000205 .6023305 .47399903 .6049957 .497996 .60766097 .5133311 .6106618 .5200043 .6139984V.6049957L.13999939 .02999878H.41400147C.44467164 .030670166 .4706726 .036168416 .4920044 .04649353 .5133362 .056828817 .5295003 .06933085 .5404968 .083999637 .5515035 .09866842 .5623372 .118337 .57299807 .14300537H.58299258L.52900698 0H.05000305V.009002686L.42300416 .57099917H.125C.10500082 .57033798 .090667728 .56167098 .08200073 .54499819 .07800293 .53700259 .07600403 .52867129 .07600403 .5200043Z"/><path id="wfont_4_68" d="M.66000369 .009994507H.66799929V0H.46299745V.009994507H.47099305C.483668 .009994507 .493337 .014328003 .5 .022994996 .506663 .031661989 .5099945 .039830526 .5099945 .04750061 .5099945 .055170698 .5086619 .062672939 .5059967 .070007327L.45100404 .20300293H.19799805L.14300537 .07299805C.13966878 .064331058 .13800049 .056162519 .13800049 .04849243 .13800049 .04083252 .14133199 .03250122 .147995 .023498536 .15466817 .01449585 .16466777 .009994507 .17799378 .009994507H.18600464V0H-.005004883V.009994507H.0030059815C.017003378 .009994507 .03116862 .014826457 .04550171 .024490357 .059834798 .03416443 .07166544 .048665365 .08099365 .067993167 .22699993 .37999473 .30300395 .5433299 .30900575 .55799868 .32033793 .5860036 .32633464 .6046702 .32699586 .6139984H.33599855L.58299258 .067993167C.6023305 .029327393 .6280009 .009994507 .66000369 .009994507M.21099854 .23300171H.43899537L.32699586 .5070038 .21099854 .23300171Z"/><path id="wfont_4_42" d="M.41900636-.014007568C.31233726-.013336182 .22583516 .020329794 .15950012 .08699036 .09316508 .15366109 .05999756 .24132793 .05999756 .34999085 .05999756 .45866395 .09316508 .5464986 .15950012 .6134949 .22583516 .6805013 .31233726 .7140045 .41900636 .7140045 .51100668 .7140045 .59200546 .691335 .66200259 .6459961L.68200686 .5050049H.67300418C.6583354 .5623372 .628835 .6065013 .5845032 .63749697 .5401713 .6685028 .4850057 .68400576 .41900636 .68400576 .33434043 .68400576 .26583863 .6533356 .21350098 .59199526 .16116333 .5306651 .1349945 .44999696 .1349945 .34999085 .1349945 .24999492 .16116333 .16949463 .21350098 .10848999 .26583863 .047495527 .33434043 .016667685 .41900636 .01600647 .46233116 .01600647 .50349429 .023671469 .5424957 .039001466 .5814972 .054331464 .6156667 .075663249 .6450043 .102996829V.27999879C.6450043 .29466758 .6405029 .3058319 .63150027 .31349183 .62249758 .3211619 .60999557 .32499696 .59399417 .32499696H.5780029V.3350067H.7740021V.32499696H.7590027C.7423299 .32499696 .72966006 .3211619 .72099307 .31349183 .71232607 .3058319 .70832827 .29466758 .70899966 .27999879V.11500549C.69166567 .09233093 .67099508 .07199097 .6469879 .053985597 .6229909 .0359904 .5908254 .02015686 .55049136 .0064849855 .5101674-.0071767175 .4663391-.014007568 .41900636-.014007568Z"/><path id="wfont_4_72" d="M.069000247 .009994507C.085001628 .009994507 .09850057 .01516215 .10949707 .025497437 .120503749 .03583272 .12633769 .04833476 .1269989 .06300354V.5379944C.1269989 .55266317 .1213328 .5649974 .11000061 .57499697 .09866842 .5849965 .085001628 .58999636 .069000247 .58999636H.054992677V.6000061H.34700013C.3743337 .6000061 .3983307 .602005 .4189911 .6060028 .43966166 .6100006 .45299784 .6133321 .45899964 .6159973V.5019989L.44799806 .503006V.5180054C.44799806 .53200277 .44332887 .5440013 .43399049 .55400088 .42466227 .5640004 .4126638 .56900027 .397995 .56900027H.19000244V.31500245H.36099244C.3743286 .31500245 .38449607 .31900025 .39149476 .32699586 .39849345 .33500163 .4019928 .34500123 .4019928 .35699464V.36999513H.41299439V.22999573H.4019928V.24299622C.4019928 .2616628 .3949941 .27433268 .3809967 .28100587 .3756663 .28299967 .3700002 .28433229 .3639984 .28500367H.19000244V.03100586H.34700013C.3776703 .03100586 .40350343 .03633626 .4244995 .04699707 .4454956 .05766805 .4614919 .07033285 .4724884 .084991458 .4834951 .09966024 .49466453 .11899821 .5059967 .14300537H.51600649L.46099855 0H.054992677V.009994507H.069000247Z"/><path id="wfont_4_71" d="M.7100067 .30000306C.7100067 .20733135 .68117269 .13416036 .62350466 .08049011 .5658366 .026830038 .4876709 0 .38900758 0H.054992677V.009994507H.067993167C.083994548 .009994507 .097325649 .015329997 .10798645 .026000977 .11865743 .036671957 .12432861 .04933675 .125 .06399536V.5359955C.12432861 .5519969 .11849467 .5649974 .10749817 .57499697 .09650167 .5849965 .083002727 .58999636 .06700134 .58999636H.054992677V.6000061H.38900758C.45433555 .6000061 .51116439 .5880025 .559494 .56399539 .60783389 .53999838 .6450043 .5053304 .67100527 .45999146 .6970062 .4146627 .7100067 .36133323 .7100067 .30000306M.19000244 .5700073V.02999878H.38900758C.46566773 .02999878 .5263316 .054163618 .57099917 .102493289 .6156667 .15083313 .6380005 .21666973 .6380005 .30000306 .6380005 .3833364 .6156667 .44916789 .57099917 .49749757 .5263316 .5458374 .46566773 .5700073 .38900758 .5700073H.19000244Z"/><path id="wfont_4_86" d="M.057998659 .03300476C.05599467 .041000368 .054992677 .057332357 .054992677 .08200073 .054992677 .106669109 .059326173 .13166809 .067993167 .15699768H.08000183C.079330448 .1509959 .07899475 .14499919 .07899475 .13900757 .07899475 .103006999 .0908254 .073506679 .114486698 .05050659 .13815816 .02750651 .17099507 .01600647 .21299744 .01600647 .25700379 .01600647 .29133607 .026168824 .31599427 .04649353 .34066264 .06682841 .35299684 .093159999 .35299684 .12548828 .35299684 .15782674 .34099833 .18466187 .31700135 .20599365L.117004398 .3600006C.085001628 .3873342 .069000247 .42400108 .069000247 .47000123 .069000247 .4960022 .076166789 .5199992 .09049988 .5419922 .10483297 .56399539 .12483215 .5814972 .15049744 .5944977 .17616272 .60749819 .20632935 .6139984 .24099732 .6139984 .27566529 .6139984 .30633036 .6109975 .33299256 .6049957H.3659973L.36799623 .4960022H.35699464C.35699464 .523997 .34732566 .54565939 .32798768 .5609894 .30865989 .5763295 .2809957 .58399966 .24499512 .58399966 .20899455 .58399966 .17932637 .57483419 .1559906 .5565033 .132665 .5381724 .1210022 .51450607 .1210022 .48550416 .1210022 .4565023 .13400269 .43133546 .16000366 .41000367L.3619995 .2539978C.39266969 .22866822 .40800477 .19333394 .40800477 .147995 .40800477 .10266622 .39083354 .064331058 .3564911 .032989503 .3221588 .0016581217 .28032939-.014007568 .23100281-.014007568 .19833882-.014007568 .16566976-.01000468 .1329956-.0019989014 .10033163 .005996704 .07533264 .01766459 .057998659 .03300476Z"/><path id="wfont_5_37" d="M.011993408-.0010070801V-.0010070801H.011001587V0 .01499939 .01600647H.011993408 .044006349C.05400594 .016667685 .060668947 .021331788 .06399536 .02999878L.30299378 .66900637C.30499778 .67300418 .30499778 .67633566 .30299378 .67900088 .30099998 .6816661 .29833476 .68299868 .29499818 .68299868H.26800538C.26733399 .68299868 .2669983 .68333438 .2669983 .68400576V.6990051C.2669983 .6996663 .26733399 .69999697 .26800538 .69999697H.34500123C.34566245 .69999697 .34599305 .6996663 .34599305 .6990051L.5970001 .02999878C.60033676 .021331788 .6066691 .016667685 .6159973 .01600647H.6490021C.64966329 .01600647 .6499939 .015670777 .6499939 .01499939V0C.6499939-.0006713867 .64966329-.0010070801 .6490021-.0010070801H.5240021C.5233307-.0010070801 .522995-.0006713867 .522995 0V.01499939C.522995 .015670777 .5233307 .01600647 .5240021 .01600647H.55599978C.55933639 .01600647 .5620015 .017339072 .56399539 .020004273 .5659993 .023330689 .566335 .026662192 .56500247 .02999878L.5249939 .13600159H.12199402L.08200073 .02999878C.08066813 .026662192 .08066813 .023330689 .08200073 .020004273 .08400472 .017339072 .08666992 .01600647 .08999634 .01600647H.1230011 .12399292V.01499939 0C.12399292-.0006713867 .123662319-.0010070801 .1230011-.0010070801H.011993408M.32299806 .67500308 .12800598 .15299988H.5189972L.32299806 .67500308Z"/><path id="wfont_5_72" d="M.4980011 .011993408V.011993408H.49899293V.011001587 0C.49899293-.0006713867 .49866233-.0010070801 .4980011-.0010070801 .4826711-.0010070801 .46967063 .0043284099 .45899964 .01499939 .45366923 .020329794 .44967143 .026662192 .44700624 .033996583 .40367127 .0060017907 .3563334-.0079956059 .30499269-.0079956059 .2936605-.0079956059 .28266398-.007329305 .27200318-.005996704 .20666504 .002670288 .15232849 .031667074 .10899353 .08099365 .08099874 .11366781 .062332155 .15017192 .052993776 .19050598 .04366557 .23084004 .04366557 .27116905 .052993776 .31149293 .062332155 .351827 .08099874 .3883311 .10899353 .42100526 .15166728 .46967063 .20533753 .4986674 .27000428 .5079956 .33200584 .5160014 .3896688 .5033366 .44299317 .47000123V.65400698C.44299317 .66333517 .43966166 .6711629 .43299867 .67749026 .42633567 .6838277 .41867066 .68699648 .41000367 .68699648 .40933229 .68699648 .40899659 .68733218 .40899659 .68800356V.6990051C.40899659 .6996663 .40933229 .69999697 .41000367 .69999697 .42533366 .69999697 .43833415 .69466659 .44900514 .68400576 .45966593 .6733348 .46499635 .6603343 .46499635 .6450043V.04499817C.46499635 .035669965 .46816 .027837119 .4744873 .021499634 .4808248 .01516215 .48866273 .011993408 .4980011 .011993408M.14300537 .08900452C.17033895 .06167094 .20150249 .041666669 .23649597 .0289917 .27149964 .016326905 .30716453 .011494954 .3434906 .01449585 .37982688 .017496745 .41299439 .028666178 .44299317 .04800415 .44299317 .049997968 .44299317 .051996869 .44299317 .054000856V.43400575C.41100059 .45933534 .37583415 .47583009 .3374939 .48349 .29916383 .49116007 .26183067 .49016319 .22549439 .48049928 .18916829 .47083537 .15766907 .45233665 .1309967 .42500306 .100997928 .3956655 .08166504 .36082969 .07299805 .3204956 .064331058 .28016154 .065831508 .23949178 .07749939 .19848633 .089167278 .15749105 .1110026 .12099711 .14300537 .08900452Z"/><path id="wfont_5_90" d="M.47599793 .503006V.503006C.4766693 .503006 .477005 .5026703 .477005 .5019989V.4909973C.477005 .4903361 .4766693 .4900055 .47599793 .4900055H.45300294C.44632975 .4893341 .44166056 .48599754 .43899537 .47999574L.2590027 0C.2590027-.0006713867 .2590027-.0006713867 .2590027 0 .2590027-.0006713867 .258667-.0010070801 .2579956-.0010070801H.23699951C.23632813-.0010070801 .23599243-.0006713867 .23599243 0L.055999757 .47999574C.053334554 .48599754 .048670453 .4893341 .042007448 .4900055H.018997193C.018335978 .4900055 .018005372 .4903361 .018005372 .4909973V.5019989C.018005372 .5026703 .018335978 .503006 .018997193 .503006H.10899353V.5019989 .4909973 .4900055H.085006717C.083002727 .4900055 .081334438 .4893392 .08000183 .4880066 .07866923 .4853312 .078333538 .4829966 .07899475 .4810028L.25300599 .018005372 .42599488 .4810028C.42666627 .4829966 .42633567 .4853312 .42500306 .4880066 .42367045 .4893392 .42200218 .4900055 .41999818 .4900055H.3959961V.4909973 .5019989 .503006H.47599793Z"/><path id="wfont_5_83" d="M.30499269 .5099945V.5099945C.35299684 .5099945 .39649964 .49832664 .4355011 .47499085 .47450257 .45166526 .5056661 .42033387 .5289917 .3809967 .55232748 .3416697 .56399539 .29833985 .56399539 .25100709 .56399539 .20300293 .55232748 .15950012 .5289917 .12049866 .5056661 .08149719 .47450257 .05032857 .4355011 .026992798 .39649964 .0036671956 .35299684-.0079956059 .30499269-.0079956059 .2576599-.0079956059 .21432495 .0036671956 .1749878 .026992798 .13566081 .05032857 .10432943 .08149719 .08099365 .12049866 .05766805 .15950012 .04600525 .20300293 .04600525 .25100709 .04600525 .29833985 .05766805 .3416697 .08099365 .3809967 .10432943 .42033387 .13566081 .45166526 .1749878 .47499085 .21432495 .49832664 .2576599 .5099945 .30499269 .5099945M.30499269 .005004883V.005004883C.34699504 .005004883 .3853302 .016001383 .41999818 .037994386 .45466615 .05999756 .48233033 .08966573 .5029907 .1269989 .5236613 .16433208 .5339966 .20566814 .5339966 .25100709 .5339966 .29633586 .5236613 .33766685 .5029907 .375 .48233033 .41233317 .45466615 .44199626 .41999818 .46398927 .3853302 .48599244 .34699504 .49699403 .30499269 .49699403 .2630005 .49699403 .22467041 .48599244 .19000244 .46398927 .15533448 .44199626 .1276652 .41233317 .10699463 .375 .08633423 .33766685 .07600403 .29633586 .07600403 .25100709 .07600403 .20566814 .08633423 .16433208 .10699463 .1269989 .1276652 .08966573 .15533448 .05999756 .19000244 .037994386 .22467041 .016001383 .2630005 .005004883 .30499269 .005004883Z"/><path id="wfont_5_75" d="M.5220032-.0980072V-.0980072C.5220032-.09866842 .52216598-.099497478 .52249148-.100494388 .52282717-.101501468 .522995-.10233561 .522995-.102996829 .522995-.1283366 .5116628-.15150452 .4889984-.17250061 .46633403-.1934967 .43599955-.21032715 .397995-.22299195 .3600006-.23566692 .31800334-.2420044 .27200318-.2420044 .23000081-.2420044 .19132996-.23683675 .1559906-.22650147 .120661418-.21616619 .091161098-.20183309 .067489627-.1835022 .043828329-.16517131 .028996787-.14466858 .022994996-.12199402 .02233378-.11666361 .023335776-.11199951 .026000977-.10800171 .029337565-.104003909 .033671064-.102005008 .039001466-.102005008 .04832967-.102005008 .05399577-.1063385 .055999757-.11500549 .06133016-.14699809 .08433024-.17399597 .125-.19599915 .16700237-.21800232 .21600342-.2290039 .27200318-.2290039 .31200157-.2290039 .34833274-.22333782 .3809967-.21200562 .41366069-.20067342 .43982444-.18550618 .45948792-.1665039 .4791616-.14750164 .4889984-.1263326 .4889984-.102996829 .4883372-.080332439 .4800059-.060668947 .46400453-.044006349 .44533793-.024007163 .42333476-.009338379 .397995 0 .367335 .012664795 .3353373 .020329794 .30200196 .022994996 .2813314 .024327597 .2606659 .023996989 .2400055 .022003174 .23599752 .022003174 .23199463 .02166748 .22799683 .020996094 .22399903 .020334879 .22000122 .01966858 .21600342 .018997193 .20399983 .017003378 .19199626 .01600647 .17999268 .01600647 .17332967 .015335083 .16666667 .01566569 .16000366 .016998291 .14266968 .020996094 .12767029 .028996787 .11500549 .041000368 .1130015 .042332967 .11099752 .044331869 .10899353 .04699707 .08899435 .069000247 .08066305 .09466553 .083999637 .12399292 .08666483 .1459961 .09566244 .16499837 .11099243 .18099976 .06966146 .21632894 .048665365 .26132713 .04800415 .31599427 .04800415 .35133363 .058003744 .383667 .07800293 .41299439 .09800211 .44233195 .125 .46583048 .15899658 .48349 .19300334 .50115969 .2303365 .5099945 .2709961 .5099945H.27200318C.30133058 .5099945 .32932536 .5159963 .35598756 .5279999 .3826599 .5400035 .40566508 .55733749 .42500306 .58000186 .42900086 .584671 .43366496 .5856679 .43899537 .58299258V.58200076C.44233195 .58066818 .44433595 .5780029 .44500733 .5740051 .44566856 .5706685 .44466654 .56766769 .44200135 .56500247 .40933738 .5336711 .3713379 .5133362 .32800294 .5039978 .3746643 .4939982 .41433207 .47166444 .44700624 .43699647 .4796702 .40299989 .4960022 .3626658 .4960022 .31599427 .4960022 .28066508 .48583476 .24816387 .46549989 .2184906 .445165 .18882752 .41816203 .16532898 .38449098 .147995 .35083009 .13066101 .31333415 .12199402 .27200318 .12199402 .21600342 .1213328 .16566976 .13800049 .1210022 .17199707 .10033163 .15066529 .092666629 .12533061 .0980072 .09599304 .102005008 .07866923 .1103363 .06400553 .1230011 .052001954 .1356659 .03999837 .15066529 .032663984 .16799927 .02999878 .18400066 .028666178 .20000203 .02933248 .21600342 .03199768 .21799724 .032669069 .21999614 .033167524 .22200012 .033493043 .2240041 .033828737 .226003 .033996583 .22799683 .033996583 .2693278 .03866577 .31032817 .037002565 .35099793 .029006958 .3790029 .024337769 .40567018 .016337077 .43099977 .005004883 .45566813-.005666097 .4773356-.020665488 .4960022-.039993287 .5113322-.056666059 .5199992-.07600403 .5220032-.0980072M.07800293 .31599427V.31599427C.07800293 .26800028 .094670619 .22733562 .12800598 .19400025 .12866719 .19332886 .12966411 .19266255 .1309967 .19200135 .13300069 .18933614 .13466899 .18733724 .13600159 .18600464 .17466736 .15133667 .22000122 .1343333 .27200318 .1349945 .30733238 .1349945 .3398285 .14316304 .36949159 .15950012 .39916484 .1758372 .42266847 .19767253 .44000245 .2250061 .45733644 .2523397 .46600343 .28266908 .46600343 .31599427 .46600343 .34932963 .45733644 .3796641 .44000245 .40699769 .42266847 .43433128 .39916484 .4561615 .36949159 .4724884 .3398285 .48882548 .30733238 .49699403 .27200318 .49699403 .23600261 .49699403 .20333354 .48882548 .17399597 .4724884 .14466858 .4561615 .12133789 .43433128 .104003909 .40699769 .08666992 .3796641 .07800293 .34932963 .07800293 .31599427Z"/><path id="wfont_5_69" d="M.44700624 .011993408V.011993408H.44799806V.011001587 0-.0010070801C.43266807-.0010070801 .41933695 .0043284099 .40800477 .01499939 .40266419 .02100118 .3986613 .027669272 .3959961 .035003663 .39466349 .039001466 .3936666 .042999269 .39300538 .04699707 .39233399 .049662275 .3919983 .051996869 .3919983 .054000856V.1269989C.3706665 .08433533 .3414968 .050669355 .30448915 .026000977 .26749168 .001332601 .22766114-.011001587 .18499756-.011001587 .15899658-.011001587 .13549297-.005004883 .114486698 .0069885256 .0934906 .018992106 .076828 .035161336 .0644989 .055496217 .0521698 .07583109 .04600525 .098332729 .04600525 .1230011 .04600525 .1509959 .054000856 .17632549 .069992069 .19898987 .08599345 .22166443 .10699463 .23766582 .1329956 .24699402L.33299256 .32099916C.35766093 .33033753 .37599693 .34700523 .3880005 .3710022 .38000489 .4063314 .36183677 .43599449 .3334961 .45999146 .30516563 .48399864 .2726644 .4960022 .23599243 .4960022 .20133464 .4960022 .17033895 .4856669 .14300537 .46499635 .11567179 .44433595 .09700521 .41766868 .087005618 .3849945 .085001628 .3783315 .08066813 .37600199 .07400513 .37800599 .07133993 .3786672 .06933594 .3803304 .067993167 .3829956 .06666056 .38633219 .066329959 .3893331 .06700134 .3919983 .080337528 .42733766 .10233561 .45567323 .1329956 .477005 .16366577 .4983368 .19799805 .5090027 .23599243 .5090027 .2713318 .5090027 .303833 .4993337 .3334961 .47999574 .36316935 .46066795 .3853353 .43500266 .3999939 .40299989 .40266929 .39633689 .40500389 .3896688 .40699769 .3829956 .41166688 .36699424 .41400147 .35032655 .41400147 .33299256V.04499817C.41400147 .035669965 .41733299 .027837119 .42399598 .021499634 .43066917 .01516215 .43833924 .011993408 .44700624 .011993408M.3919983 .15499878V.33299256C.3919983 .33899436 .3916677 .34499613 .39100648 .35099793 .3776703 .33167015 .3600006 .31767274 .33799745 .30900575L.13699341 .23599243C.11633301 .22666423 .09966532 .21266683 .08699036 .19400025 .07432556 .17533367 .067993167 .15466817 .067993167 .13200379 .067993167 .111333217 .073160808 .09233093 .083496097 .07499695 .09383138 .057662965 .10782877 .043996175 .12548828 .033996583 .14315796 .023996989 .16299439 .018997193 .18499756 .018997193 .22766114 .018997193 .26749168 .031163535 .30448915 .055496217 .3414968 .079828899 .3706665 .11299642 .3919983 .15499878Z"/><path id="wfont_5_87" d="M.28799439 .25100709V.25100709C.31999717 .2403361 .34549967 .22366841 .36450196 .20100403 .38350425 .17833965 .39300538 .15400696 .39300538 .12800598 .39300538 .10266622 .38483683 .079828899 .36849977 .05949402 .3521627 .03916931 .3304952 .02283732 .3034973 .010498047 .27649943-.0018310547 .2466685-.0079956059 .21400452-.0079956059 .17733257-.0079956059 .14399719-.0003306071 .11399841 .01499939 .083999637 .030329386 .062332155 .050664266 .04899597 .07600403 .047002157 .079330448 .04667155 .08266195 .04800415 .085998538 .049997968 .08999634 .05299886 .09233093 .057006837 .09300232 .06299845 .093663539 .06733195 .09132894 .070007327 .085998538 .07933553 .06133016 .09733073 .04166158 .12399292 .026992798 .15066529 .0123341879 .18066915 .005004883 .21400452 .005004883 .24199932 .005004883 .2673289 .0101674399 .2899933 .020492554 .31266786 .03082784 .33083598 .044662477 .34449769 .06199646 .35816957 .079330448 .3650055 .098332729 .3650055 .119003299 .3650055 .14099629 .35716758 .1613261 .3414917 .17999268 .32582603 .19865926 .30466209 .21266175 .27799989 .22200012L.14300537 .2689972C.11366781 .2789968 .09033203 .29449464 .07299805 .31549073 .055664064 .33649699 .04699707 .35899864 .04699707 .3829956 .04699707 .4063314 .05449422 .42766319 .069488529 .44699098 .084493007 .46632896 .104660037 .48166404 .12998963 .49299623 .15532939 .5043284 .18333435 .5099945 .21400452 .5099945 .24133809 .5099945 .26733399 .5049947 .2919922 .49499513 .31666056 .4849955 .33666484 .47132875 .352005 .45399476 .3546702 .45132957 .35533653 .44833375 .3540039 .44500733 .35333253 .44167076 .35133363 .43933616 .3480072 .43800355 .343338 .43667094 .3393351 .43800355 .33599855 .44200135 .32399497 .45866395 .30699159 .47199504 .2849884 .48199464 .2629954 .49199424 .2393341 .49699403 .21400452 .49699403 .18800354 .49699403 .16449993 .49216209 .14349365 .48249818 .12249756 .47283427 .105667117 .46016947 .09300232 .44450379 .080337528 .4288381 .07400513 .41133628 .07400513 .3919983 .07400513 .37132774 .081334438 .35232545 .09599304 .33499146 .11066183 .31766764 .1303304 .30467225 .15499878 .29600526L.28799439 .25100709Z"/><path id="mfont_5_55" d="M.3500061 .3959961V.3959961C.39867149 .3806661 .43733726 .35483299 .46600343 .3184967 .4946696 .28217063 .5090027 .2420044 .5090027 .19799805 .5090027 .15867107 .49849955 .123174037 .4774933 .09150696 .4564972 .059839887 .42799888 .03433736 .3919983 .01499939 .3559977-.0043385827 .31566368-.014673869 .2709961-.01600647 .26966349-.01600647 .26766459-.01600647 .2649994-.01600647 .2623342-.01600647 .2599996-.01600647 .2579956-.01600647 .22332764-.015335083 .19065857-.0084991459 .1599884 .004501343 .12932842 .017501831 .10282898 .035166425 .08049011 .057495119 .05816142 .079833988 .041666669 .105667117 .03100586 .1349945 .03100586 .1363271 .03100586 .1373291 .03100586 .13800049 .031667074 .13933309 .032663984 .13999939 .033996583 .13999939L.04899597 .14300537C.050999959 .14366658 .05233256 .14300029 .052993776 .14100647 .05966695 .1130015 .07266744 .08816528 .09199524 .0664978 .111333217 .044830324 .13483174 .027328492 .16249085 .01399231 .19016011 .0006663005 .22033184-.0066630046 .25300599-.0079956059 .2549998-.0079956059 .25699363-.0079956059 .25898744-.0079956059 .26099143-.0079956059 .2629954-.008331299 .2649994-.009002686 .26766459-.009002686 .26966349-.008666992 .2709961-.0079956059 .31033326-.007334391 .34583537 .0014953613 .37750245 .018493653 .40916953 .035502118 .43433634 .05817159 .45300294 .086502078 .47166953 .11483256 .4810028 .1459961 .4810028 .17999268 .4810028 .21866863 .46817018 .2543386 .44250489 .28700257 .4168396 .31966654 .38300578 .34299723 .34100343 .35699464L.19500733 .40800477C.16167195 .42066957 .13500469 .4401652 .11500549 .4664917 .09500631 .49282838 .085006717 .5216624 .085006717 .5529938 .085006717 .5809987 .09250387 .606664 .10749817 .6299896 .12250265 .6533254 .14300029 .67215988 .16899109 .6864929 .19499207 .700826 .22399394 .70866397 .2559967 .7100067 .2586619 .7106679 .2616628 .71099856 .2649994 .71099856 .26833598 .71099856 .27133689 .7106679 .27400209 .7100067 .30733744 .70866397 .3378347 .69982406 .36549378 .68348696 .39316307 .66716006 .41399638 .64566549 .42799378 .6190033 .42866517 .6176707 .42866517 .6166687 .42799378 .6159973 .42799378 .61466476 .42732749 .6139984 .42599488 .6139984L.4149933 .60899356C.41433207 .60899356 .41333518 .60899356 .41200257 .60899356 .41133119 .6096649 .41099549 .61033126 .41099549 .61099246 .40099589 .6369934 .3833313 .65849307 .3580017 .67549136 .33267213 .6924998 .30467225 .70167037 .27400209 .7030029 .2706655 .7030029 .26766459 .7030029 .2649994 .7030029 .2616628 .7030029 .2586619 .7030029 .2559967 .7030029 .22933452 .70167037 .20500183 .6948344 .18299866 .6824951 .16099549 .670166 .14349365 .6541646 .13049317 .63449099 .117492679 .61482748 .11099243 .59333297 .11099243 .5700073 .11099243 .54400637 .11916097 .5200043 .13549805 .4980011 .15183513 .47599793 .17333476 .45966593 .19999695 .44900514L.3500061 .3959961Z"/><path id="mfont_5_43" d="M.6950073 .35099793C.69700118 .35099793 .69799807 .3496653 .69799807 .34700013 .69799807 .34499613 .69700118 .34399415 .6950073 .34399415H.68299868C.67233785 .34399415 .66700747 .33866374 .66700747 .32800294V0C.66700747-.0020039876 .66600546-.0033365887 .66400149-.0039978029H.6629944C.6616618-.0039978029 .66066488-.0030008953 .66000369-.0010070801L.6380005 .06500244C.5713298 .010996501 .49499513-.01600647 .40899659-.01600647 .3603312-.01600647 .31399537-.006841024 .269989 .011489868 .22599285 .029830933 .18666077 .05633545 .1519928 .09100342 .11666361 .1263326 .090164188 .16616313 .07249451 .210495 .054835004 .25482688 .04600525 .30049134 .04600525 .3474884 .04600525 .39449565 .054835004 .4401652 .07249451 .48449708 .090164188 .5288289 .11666361 .56866458 .1519928 .6040039 .18666077 .6386719 .22599285 .6651713 .269989 .6835022 .31399537 .70183309 .3603312 .71099856 .40899659 .71099856 .45766197 .71099856 .50399276 .70183309 .5479889 .6835022 .59199526 .6651713 .6313324 .6386719 .66600039 .6040039 .66733297 .6026713 .66733297 .601003 .66600039 .598999L.6430054 .576004C.6410014 .57400009 .63933309 .57400009 .6380005 .576004 .6033325 .610672 .5648295 .6373393 .52249148 .65600588 .48016358 .6746724 .43699647 .6850026 .3929901 .68699648 .34899394 .6890004 .30666099 .68266806 .2659912 .66799929 .22533162 .6533305 .18900045 .6303304 .15699768 .598999 .1269989 .56832888 .10432943 .5328267 .08898926 .49249269 .07365926 .4521688 .066996257 .40933738 .069000247 .3639984 .07166544 .31866966 .08249918 .2748362 .101501468 .23249817 .120503749 .19017029 .14666748 .15233867 .17999268 .119003299 .21266683 .08633932 .2486674 .060836793 .28799439 .042495729 .32733155 .024164835 .36766563 .013000488 .40899659 .009002686 .45032756 .005004883 .49049378 .008336385 .52949526 .018997193 .5684967 .029668173 .60399886 .04800415 .6360016 .07400513V.32800294C.6360016 .33866374 .6306661 .34399415 .6199951 .34399415H.6080017C.60599777 .34399415 .6049957 .34499613 .6049957 .34700013 .6049957 .3496653 .60599777 .35099793 .6080017 .35099793H.6950073Z"/></defs><symbol id="logo-wordmark" viewBox="144 682 1212 246"><g fill="currentColor"><use href="#wfont_4_54" transform="matrix(150,0,0,-150,140.47498,794.25)"/><use href="#wfont_4_82" transform="matrix(150,0,0,-150,223.72499,794.25)"/><use href="#wfont_4_88" transform="matrix(150,0,0,-150,350.325,794.25)"/><use href="#wfont_4_93" transform="matrix(150,0,0,-150,467.32505,794.25)"/><use href="#wfont_4_68" transform="matrix(150,0,0,-150,570.5251,794.25)"/><use href="#wfont_4_3" transform="matrix(150,0,0,-150,681.9751,794.25)"/><use href="#wfont_4_42" transform="matrix(150,0,0,-150,731.4751,794.25)"/><use href="#wfont_4_88" transform="matrix(150,0,0,-150,863.1752,794.25)"/><use href="#wfont_4_72" transform="matrix(150,0,0,-150,980.1752,794.25)"/><use href="#wfont_4_71" transform="matrix(150,0,0,-150,1072.5752,794.25)"/><use href="#wfont_4_72" transform="matrix(150,0,0,-150,1196.3252,794.25)"/><use href="#wfont_4_86" transform="matrix(150,0,0,-150,1290.2252,794.25)"/><use href="#wfont_5_37" transform="matrix(75,0,0,-75,497.13288,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_72" transform="matrix(75,0,0,-75,561.48336,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_90" transform="matrix(75,0,0,-75,619.6089,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_83" transform="matrix(75,0,0,-75,672.03439,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_75" transform="matrix(75,0,0,-75,735.5598,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_69" transform="matrix(75,0,0,-75,793.6853,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_72" transform="matrix(75,0,0,-75,848.2108,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_83" transform="matrix(75,0,0,-75,906.8613,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/><use href="#wfont_5_87" transform="matrix(75,0,0,-75,970.3868,905.2498)" stroke="currentColor" stroke-width=".07" stroke-linejoin="round"/></g></symbol><symbol id="logo-monograma" viewBox="132 394 1234 700"><g fill="currentColor"><use href="#mfont_5_55" transform="matrix(582.00558,0,0,-582.00558,356.42213,935.1505)"/><use href="#mfont_5_43" transform="matrix(582.00558,0,0,-582.00558,717.26498,935.1505)"/><path transform="matrix(0,-1.4550139,1.4550139,0,141.20516,1090.1073)" stroke-width="5" fill="none" stroke="currentColor" d="M0 2.5H208.0968"/><path transform="matrix(0,-1.4550139,1.4550139,0,137.55857,705.3969)" stroke-width="5" fill="none" stroke="currentColor" d="M0 2.5H208.0968"/><path transform="matrix(0,-1.4550139,1.4550139,0,1355.1619,701.7594)" stroke-width="5" fill="none" stroke="currentColor" d="M.00000000000002842171 2.5H208.0968"/><path transform="matrix(0,-1.4550139,1.4550139,0,1355.1619,1090.1073)" stroke-width="5" fill="none" stroke="currentColor" d="M0 2.5H208.0968"/><path transform="matrix(1.4550139,0,0,1.4550139,137.55171,398.97789)" stroke-width="5" fill="none" stroke="currentColor" d="M0 2.5H836.8328"/><path transform="matrix(1.4550139,0,0,1.4550139,144.84491,1082.8345)" stroke-width="5" fill="none" stroke="currentColor" d="M0 2.5H836.8328"/></g></symbol></svg>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-wa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9.5 9.5c0 2.5 2.5 5 5 5l1-1.5-2-1-1 .8a4 4 0 0 1-2.3-2.3l.8-1-1-2z"/></symbol></svg>
+
+  <header class="hdr">
+    <div class="wrap hdr__in">
+      <span class="brand" aria-label="Souza Guedes Advogados">
+        <svg class="logo-wm" aria-hidden="true"><use href="#logo-wordmark"/></svg>
+      </span>
+      <a class="btn btn--primary hdr__cta" href="#canais" data-jump="canais"><span class="sm">Atendimento</span><span class="lg">Canais de atendimento</span></a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero__txt">
+          <p class="eyebrow">Atuação em Direito Imobiliário</p>
+          <h1 class="display">A construtora atrasou a entrega do seu imóvel? Entenda seus direitos.</h1>
+          <p class="lead">Veja o que costuma ser analisado quando o prazo de tolerância já passou e o imóvel não foi entregue: o contrato, os pagamentos e as comunicações com a construtora.</p>
+          <div class="hero__ctas">
+            <a class="btn btn--primary" href="#situacoes" data-jump="situacoes">Entenda seus direitos</a>
+            <a class="btn btn--ghost" href="https://wa.me/5511936191904?text=Ol%C3%A1%2C%20vim%20pela%20p%C3%A1gina%20sobre%20atraso%20na%20entrega%20do%20im%C3%B3vel%20e%20gostaria%20de%20apresentar%20minha%20situa%C3%A7%C3%A3o." target="_blank" rel="noopener" aria-label="Fale com o escritório pelo WhatsApp"><svg aria-hidden="true"><use href="#i-wa"/></svg>Fale com o escritório</a>
+          </div>
+          <div class="hero__id">
+            <span><b>Rodrigo Guedes da Silva</b> · OAB/SP nº 538.416</span>
+            <span><b>Lays Regina de Souza</b> · OAB/SP nº 511.204</span>
+          </div>
+        </div>
+      </div>
+      <div class="comp" aria-hidden="true">
+        <span class="comp__nevoa of"></span>
+        <span class="comp__sq"></span>
+        <span class="comp__bar"></span>
+        <span class="comp__panel seal of"></span>
+      </div>
+    </section>
+
+    <!-- Situações -->
+    <section class="section band--branco" id="situacoes" aria-labelledby="sit-t">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Situações comuns</p>
+          <h2 class="h2" id="sit-t">O que costuma acontecer quando a entrega atrasa</h2>
+          <p class="muted">Quem compra um imóvel na planta conta com a data de entrega prevista no contrato. Quando essa data e o prazo de tolerância passam sem a entrega, estas costumam ser as dúvidas.</p>
+        </div>
+        <div class="sits">
+          <div class="sit of">
+            <h3>O prazo de tolerância já foi ultrapassado</h3>
+            <p>A data prevista no contrato e a tolerância contratual já passaram, e as chaves ainda não foram entregues.</p>
+          </div>
+          <div class="sit of">
+            <h3>Não há nova previsão de entrega</h3>
+            <p>As respostas da construtora não trazem uma data, ou a data muda a cada contato.</p>
+          </div>
+          <div class="sit of">
+            <h3>A espera trouxe despesas</h3>
+            <p>Aluguel, mudança adiada ou outros gastos que surgiram por causa do atraso.</p>
+          </div>
+          <div class="sit of">
+            <h3>Não está claro se a tolerância terminou</h3>
+            <p>A contagem parte da data prevista no contrato e nos aditivos. Enquanto a tolerância estiver em curso, vale guardar as comunicações com a construtora.</p>
+          </div>
+        </div>
+        <div class="sits-dots" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+        <p class="sits-foot nota">Cada contrato tem regras próprias. O que se aplica a cada caso depende da leitura do contrato e dos documentos.</p>
+      </div>
+    </section>
+
+    <!-- Quem atende -->
+    <section class="section dark team" aria-labelledby="team-t">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Quem atende</p>
+          <h2 class="h2" id="team-t">Souza Guedes Advogados</h2>
+          <p class="muted">Os sócios responsáveis pelo escritório.</p>
+        </div>
+        <div class="people">
+          <div class="person">
+            <div class="portrait"><div class="seal of"><img src="assets/rodrigo.webp" alt="Rodrigo Guedes da Silva" width="800" height="1000"></div></div>
+            <div class="person__txt">
+              <h3 class="h3">Rodrigo Guedes da Silva</h3>
+              <p class="person__oab">OAB/SP nº 538.416</p>
+              <p class="bio muted">Sócio fundador. Graduado em Direito pela Universidade São Judas Tadeu (USJT).</p>
+            </div>
+          </div>
+          <div class="person">
+            <div class="portrait"><div class="seal of"><img src="assets/lays.webp" alt="Lays Regina de Souza" width="800" height="1000"></div></div>
+            <div class="person__txt">
+              <h3 class="h3">Lays Regina de Souza</h3>
+              <p class="person__oab">OAB/SP nº 511.204</p>
+              <p class="bio muted">Sócia fundadora. Graduada em Direito pela Universidade São Judas Tadeu (USJT).</p>
+            </div>
+          </div>
+        </div>
+        <div class="team__cta">
+          <p>Ficou com alguma dúvida?</p>
+          <a class="btn btn--ghost" href="https://wa.me/5511936191904?text=Ol%C3%A1%2C%20vim%20pela%20p%C3%A1gina%20sobre%20atraso%20na%20entrega%20do%20im%C3%B3vel%20e%20gostaria%20de%20apresentar%20minha%20situa%C3%A7%C3%A3o." target="_blank" rel="noopener" aria-label="Fale com o escritório pelo WhatsApp"><svg aria-hidden="true"><use href="#i-wa"/></svg>Fale com o escritório</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documentos e caminhos -->
+    <section class="section" id="documentos" aria-labelledby="doc-t">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="eyebrow">Documentos e caminhos</p>
+          <h2 class="h2" id="doc-t">O que reunir e quais caminhos existem</h2>
+        </div>
+        <div class="dtabs" role="tablist" aria-label="Documentos e caminhos">
+          <button type="button" role="tab" id="tab-kit" aria-controls="pn-kit" aria-selected="true">O que reunir</button>
+          <button type="button" role="tab" id="tab-paths" aria-controls="pn-paths" aria-selected="false">Caminhos possíveis</button>
+        </div>
+        <div class="docs" data-tab="kit">
+          <div class="kit of" id="pn-kit" role="tabpanel" aria-labelledby="tab-kit">
+            <div class="dblock__head">
+              <h3 class="h3">O que reunir</h3>
+              <p>Estes documentos costumam ajudar na análise, mas não são necessários para o primeiro contato.</p>
+            </div>
+            <ul class="checks">
+              <li><b>Contrato de compra e venda e aditivos</b><span>Com a data de entrega e a cláusula de tolerância.</span></li>
+              <li><b>Comprovantes de pagamento</b><span>Sinal, parcelas e eventuais taxas pagas até agora.</span></li>
+              <li><b>Comunicações com a construtora</b><span>E-mails, mensagens, notificações e protocolos de atendimento.</span></li>
+              <li><b>Material de divulgação</b><span>Folhetos, anúncios ou páginas com a data de entrega prometida.</span></li>
+              <li><b>Comprovantes de despesas da espera</b><span>Contrato de aluguel e recibos, por exemplo.</span></li>
+            </ul>
+          </div>
+          <div class="dpaths" id="pn-paths" role="tabpanel" aria-labelledby="tab-paths">
+            <div class="dblock__head">
+              <h3 class="h3">Caminhos possíveis</h3>
+              <p>Do pedido à construtora à análise jurídica do contrato.</p>
+            </div>
+            <ol class="paths">
+              <li><b>Pedir uma posição por escrito</b><span>Solicitar à construtora a nova previsão de entrega por e-mail ou protocolo e guardar a resposta.</span></li>
+              <li><b>Registrar reclamação no Procon ou no consumidor.gov.br</b><span>Reclamação administrativa, registrada nos canais oficiais desses serviços.</span></li>
+              <li><b>Análise jurídica do contrato</b><span>Dentro ou depois do prazo de tolerância, um advogado pode avaliar o caso e auxiliar nas medidas extrajudiciais ou judiciais cabíveis.</span><a class="link arrow" href="#canais" data-jump="canais">Ver canais de atendimento</a></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Perguntas frequentes -->
+    <section class="section band--branco" id="perguntas" aria-labelledby="faq-t">
+      <div class="wrap faq-ed">
+        <div class="faq-ed__side">
+          <div class="section__head">
+            <p class="eyebrow">Perguntas frequentes</p>
+            <h2 class="h2" id="faq-t">Dúvidas sobre atraso na entrega</h2>
+            <p class="muted">Respostas gerais às dúvidas mais comuns de quem comprou um imóvel na planta.</p>
+          </div>
+          <div class="faq-help of"><b>Não encontrou sua dúvida?</b><p class="muted">Você pode apresentar sua situação pelos canais oficiais do escritório.</p><a class="link arrow" href="#canais" data-jump="canais">Ver canais de atendimento</a></div>
+        </div>
+        <div class="faq-ed__main">
+          <div class="acc">
+            <details name="faq" open>
+              <summary>A construtora atrasou a entrega do meu apartamento. Quais são os meus direitos?</summary>
+              <div><p>Depende do que o contrato prevê e de quanto tempo passou além do prazo de tolerância. Em geral, são analisados a data de entrega prometida, a cláusula de tolerância, os pagamentos feitos e as comunicações com a construtora.</p><p>A Lei nº 13.786/2018 traz regras sobre o atraso na entrega de imóveis comprados na planta.</p></div>
+            </details>
+            <details name="faq">
+              <summary>O que é o prazo de tolerância?</summary>
+              <div><p>É um prazo adicional, previsto no contrato, em que o atraso é admitido. A lei permite até 180 dias corridos, desde que a cláusula esteja escrita de forma clara e destacada.</p></div>
+            </details>
+            <details name="faq">
+              <summary>Como saber se o prazo de tolerância já terminou?</summary>
+              <div><p>A contagem parte da data de entrega prevista no contrato. Por isso, vale ter em mãos o contrato e todos os aditivos, que podem ter alterado essa data. Se o prazo já terminou e as chaves não foram entregues, a análise do contrato ajuda a entender quais caminhos cabem.</p></div>
+            </details>
+            <details name="faq">
+              <summary>Posso desistir da compra por causa do atraso?</summary>
+              <div><p>A lei prevê regras próprias para quem desiste depois de vencido o prazo de tolerância. O que se aplica depende do contrato e da situação de cada caso.</p></div>
+            </details>
+            <details name="faq">
+              <summary>Quais documentos devo guardar?</summary>
+              <div><p>Contrato e aditivos, comprovantes de pagamento, e-mails e mensagens com a construtora e o material de divulgação com a data prometida. A lista completa está em “O que reunir”, acima.</p></div>
+            </details>
+            <details name="faq">
+              <summary>Como funciona a reclamação no Procon?</summary>
+              <div><p>A reclamação é registrada nos canais oficiais do Procon ou do consumidor.gov.br. Um advogado também pode auxiliar nessas medidas extrajudiciais. Se quiser uma análise jurídica do contrato, os canais do escritório estão logo abaixo.</p></div>
+            </details>
+          </div>
+          <p class="faq-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></svg><span><b>Conteúdo informativo.</b> As respostas explicam regras gerais e não substituem a análise individual de cada caso (Provimento CFOAB nº 205/2021).</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Canais de atendimento -->
+    <section class="cta dark canais" id="canais" aria-labelledby="canais-t">
+      <span class="cta__bar" aria-hidden="true"></span>
+      <div class="wrap">
+        <div class="canais__head">
+          <p class="eyebrow">Canais de atendimento</p>
+          <h2 class="h2" id="canais-t">Se quiser apresentar sua situação, escolha um canal.</h2>
+          <p class="muted">Você decide se e por onde quer falar com o escritório.</p>
+          <p class="hours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Segunda a sexta, das 10h às 18h</b></span></p>
+        </div>
+        <div class="chs">
+          <dl class="ch of">
+            <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9.5 9.5c0 2.5 2.5 5 5 5l1-1.5-2-1-1 .8a4 4 0 0 1-2.3-2.3l.8-1-1-2z"/></svg>WhatsApp</dt>
+            <dd><strong>(11) 93619-1904</strong>
+              <span class="act"><a class="btn btn--light" href="https://wa.me/5511936191904?text=Ol%C3%A1%2C%20vim%20pela%20p%C3%A1gina%20sobre%20atraso%20na%20entrega%20do%20im%C3%B3vel%20e%20gostaria%20de%20apresentar%20minha%20situa%C3%A7%C3%A3o." target="_blank" rel="noopener">Abrir WhatsApp</a></span></dd>
+          </dl>
+          <dl class="ch of">
+            <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Telefone</dt>
+            <dd><strong>(11) 93619-1904</strong>
+              <span class="act"><a class="btn btn--light" href="tel:+5511936191904">Ligar</a></span></dd>
+          </dl>
+          <dl class="ch of">
+            <dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14"/><path d="M3 7l9 6 9-6"/></svg>E-mail</dt>
+            <dd><strong>souzaguedes.adv<wbr>@gmail.com</strong>
+              <span class="act"><a class="btn btn--light" href="mailto:souzaguedes.adv@gmail.com">Escrever e-mail</a></span></dd>
+          </dl>
+        </div>
+        <details class="after" open>
+          <summary><h3 class="cgroup__t">Depois do primeiro contato</h3></summary>
+          <ol class="steps">
+            <li><b>Você apresenta a situação</b><span>Pelo canal que preferir, com as informações que achar necessárias.</span></li>
+            <li><b>Verificamos o tema</b><span>Confirmamos se o assunto está entre as áreas de atuação do escritório.</span></li>
+            <li><b>Reunião de análise inicial</b><span>Se estiver, marcamos uma reunião. Honorários só na proposta formal de contratação.</span></li>
+          </ol>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ftr">
+    <div class="wrap">
+      <div class="ftr__grid">
+        <div style="display:grid;gap:var(--s3);align-content:start">
+          <span class="brand" aria-label="Souza Guedes Advogados">
+            <svg class="logo-mono" aria-hidden="true"><use href="#logo-monograma"/></svg>
+            <svg class="logo-wm" aria-hidden="true"><use href="#logo-wordmark"/></svg>
+          </span>
+          <ul class="ftr__oab">
+            <li>Rodrigo Guedes da Silva<span>OAB/SP nº 538.416</span></li>
+            <li>Lays Regina de Souza<span>OAB/SP nº 511.204</span></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Sede</h2>
+          <p class="muted">Rua Uhland, 784, Casa 1<br>Vila Ema, São Paulo/SP<br>CEP 03283-000</p>
+          <p class="muted" style="margin-top:8px">Seg. a sex., 10h às 18h</p>
+        </div>
+        <div>
+          <h2>Contato</h2>
+          <ul>
+            <li>(11) 93619-1904 <span class="muted">· telefone e WhatsApp</span></li>
+            <li>souzaguedes.adv@gmail.com</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Escritório</h2>
+          <ul>
+            <li><a href="https://souzaguedesadv.com.br/privacidade" target="_blank" rel="noopener">Privacidade e LGPD</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="ftr__legal">
+        <p>Conteúdo de caráter meramente informativo, nos termos do Provimento CFOAB nº 205/2021 e do Código de Ética e Disciplina da OAB. Não constitui consulta jurídica nem promessa de resultado, e a análise de cada caso depende de contratação formal.</p>
+        <p>© 2026 Souza Guedes Advogados · Sociedade de advogados registrada na OAB/SP</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie" id="cookie" role="region" aria-label="Aviso de cookies">
+    <div class="wrap cookie__in">
+      <p>Usamos cookies de medição do Google e da Meta somente se você aceitar. Eles registram de qual anúncio você veio e se clicou em um canal, nunca o conteúdo das conversas. Saiba mais na <a class="link" href="https://souzaguedesadv.com.br/privacidade" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
+      <div class="cookie__btns">
+        <button class="btn btn--ghost" type="button" data-cookie="recusar">Recusar</button>
+        <button class="btn btn--primary" type="button" data-cookie="aceitar">Aceitar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const frame = $('#frame'), stage = $('#stage');
+
+function setVP(vp){
+  frame.dataset.vp = vp;
+  $$('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.vp === vp)));
+  try{ localStorage.setItem('sg-hp-vp', vp) }catch(e){}
+  // perguntas: no desktop a primeira já vem aberta; no celular todas começam fechadas, para a lista caber na tela
+  $$('#perguntas details').forEach((d, i) => { d.open = vp === 'desktop' && i === 0 });
+  $('.after').open = vp === 'desktop';
+  fit();
+}
+function fit(){
+  frame.style.zoom = '';
+  const w = frame.dataset.vp === 'mobile' ? 390 : 1440;
+  const avail = stage.clientWidth - 32;
+  frame.style.zoom = avail < w ? String(Math.max(.2, avail / w)) : '';
+  // o cabeçalho do site gruda logo abaixo da barra de revisão (compensando o zoom do quadro)
+  frame.style.setProperty('--hdr-top', ($('.review').offsetHeight / (parseFloat(frame.style.zoom) || 1)) + 'px');
+}
+addEventListener('scroll', () => {
+  const h = $('.hdr');
+  h.classList.toggle('is-stuck', h.getBoundingClientRect().top <= $('.review').offsetHeight + 1 && scrollY > 0);
+}, { passive:true });
+$$('.seg button').forEach(b => b.addEventListener('click', () => setVP(b.dataset.vp)));
+addEventListener('resize', fit);
+
+// Documentos e caminhos: no celular, os dois assuntos viram abas (no desktop ficam lado a lado e as abas não aparecem)
+$$('.dtabs [role=tab]').forEach(b => b.addEventListener('click', () => {
+  $$('.dtabs [role=tab]').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+  $('.docs').dataset.tab = b.id === 'tab-kit' ? 'kit' : 'paths';
+}));
+
+// Situações no celular: os pontos acompanham o item do carrossel que está à vista
+$('.sits').addEventListener('scroll', e => {
+  const s = e.currentTarget, i = Math.round(s.scrollLeft / (s.firstElementChild.offsetWidth + parseFloat(getComputedStyle(s).columnGap)));
+  $$('.sits-dots span').forEach((d, k) => d.classList.toggle('on', k === i));
+}, { passive:true });
+
+// Âncoras internas: rolagem suave até a seção, descontando o cabeçalho fixo
+$$('[data-jump]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  const target = document.getElementById(a.dataset.jump), offset = $('.review').offsetHeight + $('.hdr').offsetHeight * (parseFloat(frame.style.zoom) || 1);
+  scrollTo({ top: target.getBoundingClientRect().top + scrollY - offset, behavior:'smooth' });
+}));
+
+function toast(msg){ const t = document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.append(t); setTimeout(()=>t.remove(), 1800); }
+// Protótipo: a escolha só fecha o aviso. Na Fase 5, "Aceitar" libera o GTM (#21) e "Recusar" mantém as tags desligadas.
+$$('[data-cookie]').forEach(b => b.addEventListener('click', () => { $('#cookie').hidden = true; toast(b.dataset.cookie === 'aceitar' ? 'Cookies de medição aceitos' : 'Cookies de medição recusados'); }));
+
+let vp = matchMedia('(min-width: 1100px)').matches ? 'desktop' : 'mobile';
+try{ vp = localStorage.getItem('sg-hp-vp') || vp }catch(e){}
+setVP(vp);
+</script>
