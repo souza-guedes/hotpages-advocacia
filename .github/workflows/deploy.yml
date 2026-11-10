@@ -68,6 +68,9 @@ jobs:
           # Remove placeholder do painel se ainda existir
           "${SSH[@]}" "$TARGET" "rm -f '$REMOTE_BASE/public_html/default.php'"
 
+          # LiteSpeed exige dirs 755 / files 644 para servir estáticos (css/js/assets).
+          "${SSH[@]}" "$TARGET" "find '$REMOTE_BASE/public_html' -type d -exec chmod 755 {} \; ; find '$REMOTE_BASE/public_html' -type f -exec chmod 644 {} \;"
+
       - name: Smoke HTTPS
         run: |
           set -euo pipefail
@@ -81,6 +84,10 @@ jobs:
             echo "${path} -> ${code}"
             test "$code" = "200"
           done
+
+          css=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "https://lp.souzaguedes.adv.br/css/componentes.css?v=5.1.5")
+          echo "/css/componentes.css -> ${css}"
+          test "$css" = "200"
 
           # Headers de segurança (WDLC 7.1)
           hdrs=$(curl -sSI --max-time 20 "https://lp.souzaguedes.adv.br/imobiliario")
