@@ -17,7 +17,8 @@ OUT = HERE / 'telas'
 CHROME = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
 KEY = (255, 0, 255)  # cor do palco, usada para recortar o fim da página
 
-VP = {'desktop': (1440, 1, 9000), 'mobile': (390, 2, 14000)}  # largura, escala, altura máxima do viewport (px CSS)
+# escala alta para ficar nítido em telas de alta densidade
+VP = {'desktop': (1440, 2, 7500), 'mobile': (390, 3, 7000)}  # largura, escala, altura máxima do viewport (px CSS)
 FOLD = {'desktop': 900, 'mobile': 844}  # altura da primeira dobra (px CSS)
 
 STYLE = ('<style>.review,.notes{display:none!important}html,body,.stage{background:#ff00ff!important;margin:0!important}'
@@ -25,11 +26,11 @@ STYLE = ('<style>.review,.notes{display:none!important}html,body,.stage{backgrou
          '.frame{box-shadow:none!important;border:0!important;border-radius:0!important;margin:0!important}</style>')
 
 
-def capture(html, vp, hide_cookie=True, height=None):
+def capture(html, vp, hide_cookie=True, height=None, extra=''):
     width, scale, full = VP[vp]
     height = height or full
     js = (f'window.fit=function(){{frame.style.zoom=""}};setVP("{vp}");frame.style.setProperty("--hdr-top","0px");'
-          + ('document.getElementById("cookie").hidden=true;' if hide_cookie else ''))
+          + ('document.getElementById("cookie").hidden=true;' if hide_cookie else '') + extra)
     page = html.replace('</style>', '</style>' + STYLE, 1).replace('</script>', f'{js}</script>', 1)
     with tempfile.TemporaryDirectory() as tmp:
         f = SRC.parent / f'.captura-{vp}.html'  # ao lado do protótipo, para os caminhos assets/ funcionarem
@@ -52,7 +53,7 @@ def capture(html, vp, hide_cookie=True, height=None):
 
 def save(im, name):
     path = OUT / f'{name}.jpg'
-    im.save(path, quality=82, optimize=True, progressive=True)
+    im.save(path, quality=90, subsampling=0, optimize=True, progressive=True)
     print(f'{path.name:28} {im.width}x{im.height}  {path.stat().st_size // 1024} KB')
 
 
@@ -62,3 +63,8 @@ for vp in sys.argv[1:] or list(VP):
     save(capture(html, vp), f'hotpage-{vp}')
     # primeira dobra com o aviso de cookies, como o visitante vê ao chegar pelo anúncio
     save(capture(html, vp, hide_cookie=False, height=FOLD[vp]), f'chegada-{vp}')
+# celular: a seção de documentos com a aba "Caminhos possíveis" selecionada (a página inteira mostra a primeira aba)
+if 'mobile' in (sys.argv[1:] or list(VP)):
+    so = ('const st=document.createElement("style");st.textContent=".hdr,.ftr,main>section:not(#documentos){display:none!important}";'
+          'document.head.append(st);document.getElementById("tab-paths").click();')
+    save(capture(html, 'mobile', extra=so), 'caminhos-mobile')

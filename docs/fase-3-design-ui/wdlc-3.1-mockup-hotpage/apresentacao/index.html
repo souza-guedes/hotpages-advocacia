@@ -192,11 +192,12 @@ body.full .bar,body.full .screens,body.full .help{display:none}
 
 <script>
 const SCREENS = [
-  { f:'chegada', t:'Chegada pelo anúncio', r:'/imobiliario', wf:'1ª dobra', n:'O que o visitante vê ao chegar: área de atuação, a situação dele, chamadas para entender (não para contratar), os dois sócios com OAB/SP e o aviso de cookies sem bloquear a página.' },
-  { f:'hotpage', t:'Hotpage completa', r:'/imobiliario', wf:'Modelo', n:'Situações, documentos e caminhos (inclusive Procon e consumidor.gov.br, sem advogado), perguntas frequentes, quem atende e canais. Sem formulário: o contato é só pelos canais oficiais.' }
+  { f:'chegada', t:'Chegada pelo anúncio', r:'/imobiliario', wf:'1ª dobra', n:'O que o visitante vê ao chegar: área de atuação, a situação dele, a chamada para entender ao lado do botão de contato pelo WhatsApp, os dois sócios com OAB/SP e o aviso de cookies sem bloquear a página.' },
+  { f:'caminhos', mobileOnly:true, t:'Aba “Caminhos possíveis”', r:'/imobiliario', wf:'Celular', n:'No celular, “Documentos e caminhos” vira duas abas. Esta é a segunda: os três caminhos, do pedido à construtora à análise jurídica, com o atalho para os canais. A página completa mostra a primeira aba, “O que reunir”.' },
+  { f:'hotpage', t:'Hotpage completa', r:'/imobiliario', wf:'Modelo', n:'Situações, com destaque para o prazo de tolerância já ultrapassado, quem atende, documentos e caminhos, perguntas frequentes e canais. “Fale com o escritório” abre o WhatsApp, no início e em quem atende; “Ver canais de atendimento” leva à seção de canais, nos caminhos e nas perguntas. Os textos são neutros, e o WhatsApp só abre com o clique. Sem formulário.' }
 ];
 const $ = s => document.querySelector(s);
-const src = (s, vp) => s.mobileOnly ? 'telas/menu-mobile.jpg' : `telas/${s.f}-${vp}.jpg`;
+const src = (s, vp) => s.mobileOnly ? `telas/${s.f}-mobile.jpg?v=41` : `telas/${s.f}-${vp}.jpg?v=41`;
 const DESK_AR = 1.25;          // proporção do quadro desktop do Stitch
 const MOB_AR = 393 / 852;      // proporção do celular
 let i = 0, device = 'desktop';
