@@ -33,9 +33,19 @@ a{color:inherit}
 /* ---------- Elementos de marca ---------- */
 /* Moldura aberta: fio de 1px com uma interrupção no lado esquerdo (assinatura do monograma) */
 .of{position:relative}
+/* Moldura aberta: retângulo completo (100%) menos um vão à esquerda via mask-composite.
+   Evita calc(100% - Npx), que com larguras .5px no grid cortava a borda direita. */
 .of::before{content:"";position:absolute;inset:var(--of-inset,0);border:1px solid var(--of-c,var(--tinta));pointer-events:none;transition:border-color .15s;
-  -webkit-mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat;
-          mask:linear-gradient(#000 0 0) right/calc(100% - 2px) 100% no-repeat,linear-gradient(to bottom,#000 0 var(--of-a,38%),transparent var(--of-a,38%) var(--of-b,62%),#000 var(--of-b,62%)) left/2px 100% no-repeat}
+  -webkit-mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);
+  -webkit-mask-size:100% 100%,2px calc(var(--of-b,62%) - var(--of-a,38%));
+  -webkit-mask-position:0 0,0 var(--of-a,38%);
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-composite:destination-out;
+  mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);
+  mask-size:100% 100%,2px calc(var(--of-b,62%) - var(--of-a,38%));
+  mask-position:0 0,0 var(--of-a,38%);
+  mask-repeat:no-repeat;
+  mask-composite:subtract}
 /* Selo: painel petróleo-profundo com moldura dupla (externa aberta, interna fechada) e fio de latão */
 .seal{background:var(--petroleo-profundo);position:relative;--of-c:var(--texto-claro);--of-inset:12% 16%;--of-a:40%;--of-b:56%}
 .seal::after{content:"";position:absolute;inset:18% 23%;border:1px solid var(--texto-claro);pointer-events:none}
@@ -292,10 +302,14 @@ p{margin:0}
 #situacoes .section__head{margin-inline:auto;text-align:center;justify-items:center}
 /* cada situação é um cartão branco com a moldura aberta da marca (como "O que reunir" e os canais) e o número no quadrado petróleo (como os caminhos); igual no celular e no desktop */
 .sit{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-content:start;padding:var(--s3);background:var(--branco);counter-increment:sit;
-  /* inset 1px: a moldura de 1px em inset:0 some na borda direita com larguras fracionárias (zoom 100% / grid) */
-  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%;--of-inset:1px}
+  --of-c:var(--borda-campo);--of-a:28%;--of-b:52%;
+  border:1px solid var(--of-c,var(--borda-campo))}
 @container site (min-width:1100px){.sit{padding:var(--s4)}}
-/* o número fica no ::after (o ::before é a moldura aberta), levado para a frente com order */
+/* Vão da moldura aberta à esquerda (sem mask — a mask do .of cortava a borda direita no grid). */
+.sit.of::before{
+  inset:auto;left:-1px;top:0;bottom:0;width:2px;border:0;-webkit-mask:none;mask:none;
+  background:linear-gradient(to bottom,transparent 0,transparent var(--of-a,28%),var(--branco) var(--of-a,28%),var(--branco) var(--of-b,52%),transparent var(--of-b,52%))}
+/* o número fica no ::after (o ::before abre o vão), levado para a frente com order */
 .sit::after{content:counter(sit,decimal-leading-zero);order:-1;justify-self:start;width:40px;height:40px;display:grid;place-items:center;margin-bottom:var(--s1);
   background:var(--petroleo);color:var(--branco);font-family:var(--font-display);font-size:16px;line-height:1;letter-spacing:.04em}
 .sit h3{font-family:var(--font-titulo);font-weight:600;font-size:19px;line-height:26px;margin:0}
