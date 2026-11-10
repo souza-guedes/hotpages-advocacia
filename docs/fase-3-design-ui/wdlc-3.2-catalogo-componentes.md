@@ -121,4 +121,4 @@ Cada página do catálogo traz a lista "Fazer / Não fazer" completa. Em resumo:
 | Barra de canais no celular | Sócios | Aprovar ou descartar (seção 4.1). |
 | "Configurar" no aviso de cookies | Sócios / #21 | Aprovar o painel (seção 4.2); a #21 liga as tags por categoria. |
 | Chaves de dados novas em `config/pages.php` | Fase 5 (#14) | `situations[]`, `documents[]`, `paths[]` e `faq[]` com pergunta e resposta. |
-| Respostas das perguntas | #11 | Textos do catálogo são os provisórios da WDLC 3.1. |
+| Respostas das perguntas | #11 | Feito: [WDLC 4.1](../fase-4-copy-conteudo/wdlc-4.1-copy-atraso-entrega-imovel.md). Wiring no HTML na Fase 5 (#14). |

@@ -3,26 +3,24 @@
 declare(strict_types=1);
 
 // Uma entrada por hotpage. A chave é o slug da rota (também listado em public/.htaccess).
-// Textos provisórios, tirados da WDLC 1.1 (ângulo da página e perguntas da seção 6).
-// A copy final e as respostas das perguntas vêm das #11 e #12 (fase 4).
+// Copy de atraso na entrega: docs/fase-4-copy-conteudo/wdlc-4.1-copy-atraso-entrega-imovel.md (#11).
+// Copy de Saúde e Consumidor: #12 (fase 4). Respostas do FAQ e seções extras entram na Fase 5 (#14).
 
 return [
     'imobiliario' => [
         'area' => 'Direito Imobiliário',
-        'title' => 'Direito Imobiliário: usucapião, despejo e leilão | Souza Guedes Advogados',
-        'description' => 'Entenda a usucapião, o despejo, a arrematação em leilão e o atraso na entrega do imóvel, e saiba quais documentos reunir.',
-        'heading' => 'Direito Imobiliário: entenda os caminhos para o seu imóvel',
-        'intro' => 'Regularização por usucapião, despejo, arrematação em leilão e atraso na entrega do imóvel. Veja o que costuma ser analisado (matrícula, contrato, edital, comprovantes de posse) e quais documentos reunir.',
-        'whatsapp_topic' => 'Direito Imobiliário',
+        'title' => 'Atraso na entrega do imóvel: entenda seus direitos | Souza Guedes Advogados',
+        'description' => 'Veja o que costuma ser analisado quando o prazo de tolerância já passou e o imóvel não foi entregue, e quais documentos reunir.',
+        'heading' => 'A construtora atrasou a entrega do seu imóvel? Entenda seus direitos.',
+        'intro' => 'Veja o que costuma ser analisado quando o prazo de tolerância já passou e o imóvel não foi entregue: o contrato, os pagamentos e as comunicações com a construtora.',
+        'whatsapp_topic' => 'atraso na entrega do imóvel',
         'faq' => [
-            'Moro há anos num imóvel sem escritura. Posso regularizar por usucapião?',
-            'Qual a diferença entre usucapião em cartório e usucapião na Justiça?',
-            'Quais documentos preciso reunir para começar uma usucapião?',
-            'O inquilino parou de pagar o aluguel. Como funciona o despejo?',
-            'Comprei um imóvel em leilão e ele está ocupado. Como faço para tomar posse?',
-            'O que devo verificar no edital e na matrícula antes de dar um lance num leilão?',
             'A construtora atrasou a entrega do meu apartamento. Quais são os meus direitos?',
-            'Qual a diferença entre reintegração de posse e imissão na posse?',
+            'O que é o prazo de tolerância?',
+            'Como saber se o prazo de tolerância já terminou?',
+            'Posso desistir da compra por causa do atraso?',
+            'Quais documentos devo guardar?',
+            'Como funciona a reclamação no Procon?',
         ],
     ],
     'saude' => [
