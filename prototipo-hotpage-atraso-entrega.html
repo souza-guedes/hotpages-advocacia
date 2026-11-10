@@ -9,6 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap">
 <style>
+/* Componentes das hotpages Souza Guedes Advogados.
+   Extraído sem alterações do protótipo aprovado da WDLC 3.1 (docs/fase-3-design-ui/wdlc-3.1-mockup-hotpage/prototipo.html)
+   na WDLC 3.2 (#9). O protótipo e o catálogo de componentes usam este arquivo; a Fase 5 (#14) parte dele.
+   O CSS da barra de revisão e do palco dos mockups fica em revisao.css. */
 /* Hotpage modelo das campanhas (atraso na entrega do imóvel).
    Base visual: o design system do site institucional (WDLC 3.1 + mockups WDLC 3.2), reaproveitado sem alterações.
    A página é uma só e sem menu: o visitante chega por anúncio, entende a situação e, se quiser, escolhe um canal.
@@ -20,8 +24,7 @@
   --turquesa:#5AA7A1; --petroleo:#1E5A56; --petroleo-profundo:#123B39; --tinta:#0E1E1D;
   --papel:#F5F2EC; --nevoa:#E4EEEC; --texto-secundario:#4A5554; --texto-claro:#B9CFCC;
   --latao:#C9A970; --latao-escuro:#7A5F33; --linha:#CFD8D6; --borda-campo:#6E7C7A; --branco:#FFFFFF;
-  --erro:#9B2C1F;   /* erro de formulário: 6,9:1 sobre branco — proposta para #22 */
-  --palco:#D9DFDD;  /* fundo do palco de revisão, fora do site */
+  --erro:#9B2C1F;   /* só erro de formulário; as hotpages não têm formulário (WDLC 1.2, seção 5) */
 
   --font-display:"Cinzel","Trajan Pro",Georgia,serif;
   --font-titulo:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
@@ -31,30 +34,12 @@
   --r-sm:2px;
 }
 *,*::before,*::after{box-sizing:border-box}
-body{background:var(--palco);color:var(--tinta);font-family:var(--font-sans)}
+body{color:var(--tinta);font-family:var(--font-sans)}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--petroleo);outline-offset:3px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
-/* ---------- Barra de revisão (fora do mockup) ---------- */
-.review{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--tinta);color:var(--papel);
-  padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;font-size:14px}
-.review__id{font-family:var(--font-display);letter-spacing:.14em;font-size:12px;color:var(--latao);white-space:nowrap}
-.review__screen{display:flex;gap:8px;align-items:center;min-width:0;flex:1 1 260px}
-.review__screen label{color:var(--texto-claro);white-space:nowrap}
-.review select{background:#1b2e2c;color:var(--papel);border:1px solid #3c5250;border-radius:var(--r-sm);padding:6px 8px;min-width:0;max-width:100%;flex:1}
-.seg{display:inline-flex;border:1px solid #3c5250;border-radius:var(--r-sm);overflow:hidden}
-.seg button{background:transparent;border:0;padding:6px 12px;color:var(--texto-claro);cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--papel);color:var(--tinta);font-weight:600}
-.review :focus-visible{outline-color:var(--turquesa)}
-.notes{background:#1b2e2c;color:var(--texto-claro);padding:8px 16px;font-size:13px;line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 18px}
-.notes b{color:var(--papel);font-weight:600}
-.notes code{font-family:ui-monospace,Consolas,monospace;color:var(--latao)}
-.stage{padding:24px 16px 48px;display:flex;justify-content:center}
-.frame{container-type:inline-size;container-name:site;background:var(--papel);color:var(--tinta);
-  width:1440px;flex:none;box-shadow:0 18px 50px rgba(14,30,29,.18);position:relative}
-.frame[data-vp="mobile"]{width:390px;border:8px solid var(--tinta);border-radius:28px;overflow:clip}
 
 /* ---------- Elementos de marca ---------- */
 /* Moldura aberta: fio de 1px com uma interrupção no lado esquerdo (assinatura do monograma) */
@@ -293,11 +278,8 @@ p{margin:0}
 .cookie .btn{padding:10px 16px;font-size:15px}
 
 .screen[hidden],[hidden]{display:none!important}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 16px;font-size:14px;z-index:60;border-radius:var(--r-sm)}
 
 /* ---------- Hotpage ---------- */
-.review__title{color:var(--texto-claro);font-size:14px;flex:1 1 260px;min-width:0}
-.review__title b{color:var(--papel);font-weight:600}
 
 /* Cabeçalho: só a marca e o atalho para os canais (sem menu, a página é única) */
 .hdr__cta{display:inline-flex;padding:10px 14px;font-size:15px}
@@ -511,6 +493,81 @@ p{margin:0}
 /* Banner de cookies: aceitar e recusar com o mesmo peso visual (tags só depois do aceite) */
 .cookie__btns{display:flex;gap:10px;flex-wrap:wrap}
 .cookie__btns .btn{min-width:112px}
+
+/* ---------- Ajuste da WDLC 3.2: celulares de 360px ----------
+   O protótipo da WDLC 3.1 foi desenhado em 390px. Abaixo de 380px, a linha de cada canal não comporta o contato e o
+   botão lado a lado (o telefone e o e-mail quebravam no meio), então o botão desce para baixo do contato. */
+@container site (max-width:379px){
+  .ch{grid-template-columns:minmax(0,1fr)}
+  .ch .act{grid-column:1;grid-row:auto;justify-content:flex-start;padding-top:4px}
+  .ch .btn{width:100%}
+}
+
+/* ---------- Propostas da WDLC 3.2 (#9): sujeitas à aprovação dos sócios ----------
+   Não aparecem no protótipo aprovado da WDLC 3.1. Só entram na Fase 5 se os sócios aprovarem. */
+
+/* Barra de canais fixa no celular: discreta, sem pulso, sem tooltip e sem abrir nada sozinha.
+   Os três canais com o mesmo peso. Some a partir de 760px e enquanto o aviso de cookies estiver aberto. */
+.mbar{position:sticky;bottom:0;z-index:6;background:var(--papel);border-top:1px solid var(--linha);box-shadow:0 -8px 24px rgba(14,30,29,.08);padding-bottom:env(safe-area-inset-bottom,0px)}
+.mbar ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.mbar li + li{border-left:1px solid var(--linha)}
+.mbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:8px 4px;color:var(--petroleo);
+  font-family:var(--font-titulo);font-weight:600;font-size:13px;line-height:16px;text-decoration:none;transition:background-color .15s}
+.mbar a svg{width:20px;height:20px;flex:none}
+.mbar a:hover{background:var(--branco)}
+.mbar a:focus-visible{outline-offset:-4px}
+@container site (min-width:760px){.mbar{display:none}}
+
+/* Aviso de cookies com "Configurar": o painel abre dentro do próprio aviso (sem modal) e começa com as medições desligadas */
+.cookie__link{background:transparent;border:0;padding:10px 4px;font-size:15px;cursor:pointer}
+/* no celular, "Configurar" fica numa linha própria, embaixo de "Recusar" e "Aceitar", que continuam lado a lado */
+@container site (max-width:759px){.cookie__link{order:1;flex:1 0 100%;text-align:left;padding:4px 0}}
+.cookie__cfg{display:grid;gap:var(--s2);padding-block:4px 16px}
+.copts{margin:0;padding:0;border:0;display:grid;min-width:0}
+.copts legend{padding:0;margin-bottom:8px;font-family:var(--font-titulo);font-weight:600;font-size:17px;line-height:25px}
+.copt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px var(--s2);align-items:center;padding-block:12px;border-top:1px solid var(--linha);cursor:pointer}
+.copt b{font-weight:600;font-size:15px;line-height:22px}
+.copt span{display:block;color:var(--texto-secundario);font-size:14px;line-height:21px;max-width:72ch}
+.copt:has(:disabled){cursor:default}
+/* interruptor quadrado, como o resto da marca (o site não tem uso aprovado para cantos redondos): caixa de seleção com role="switch"; o estado aparece na posição e no preenchimento, não só na cor */
+.switch{appearance:none;-webkit-appearance:none;margin:0;width:44px;height:24px;border:1px solid var(--borda-campo);border-radius:var(--r-sm);background:var(--branco);position:relative;cursor:pointer;flex:none;transition:background-color .15s,border-color .15s}
+.switch::before{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--borda-campo);transition:transform .15s,background-color .15s}
+.switch:checked{background:var(--petroleo);border-color:var(--petroleo)}
+.switch:checked::before{transform:translateX(20px);background:var(--branco)}
+.switch:hover{border-color:var(--petroleo)}
+.switch:disabled{opacity:.55;cursor:default}
+</style>
+<style>
+/* Barra de revisão e palco dos mockups e do catálogo (fora da hotpage).
+   Extraído do protótipo da WDLC 3.1. Não vai para a Fase 5. */
+:root{--palco:#D9DFDD}  /* fundo do palco de revisão, fora do site */
+body{background:var(--palco)}
+/* ---------- Barra de revisão (fora do mockup) ---------- */
+.review{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--tinta);color:var(--papel);
+  padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;font-size:14px}
+.review__id{font-family:var(--font-display);letter-spacing:.14em;font-size:12px;color:var(--latao);white-space:nowrap}
+.review__screen{display:flex;gap:8px;align-items:center;min-width:0;flex:1 1 260px}
+.review__screen label{color:var(--texto-claro);white-space:nowrap}
+.review select{background:#1b2e2c;color:var(--papel);border:1px solid #3c5250;border-radius:var(--r-sm);padding:6px 8px;min-width:0;max-width:100%;flex:1}
+.seg{display:inline-flex;border:1px solid #3c5250;border-radius:var(--r-sm);overflow:hidden}
+.seg button{background:transparent;border:0;padding:6px 12px;color:var(--texto-claro);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--papel);color:var(--tinta);font-weight:600}
+.review :focus-visible{outline-color:var(--turquesa)}
+.notes{background:#1b2e2c;color:var(--texto-claro);padding:8px 16px;font-size:13px;line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 18px}
+.notes b{color:var(--papel);font-weight:600}
+.notes code{font-family:ui-monospace,Consolas,monospace;color:var(--latao)}
+.stage{padding:24px 16px 48px;display:flex;justify-content:center}
+.frame{container-type:inline-size;container-name:site;background:var(--papel);color:var(--tinta);
+  width:1440px;flex:none;box-shadow:0 18px 50px rgba(14,30,29,.18);position:relative}
+.frame[data-vp="mobile"]{width:390px;border:8px solid var(--tinta);border-radius:28px;overflow:clip}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--tinta);color:var(--papel);padding:10px 16px;font-size:14px;z-index:60;border-radius:var(--r-sm)}
+.review__title{color:var(--texto-claro);font-size:14px;flex:1 1 260px;min-width:0}
+.review__title b{color:var(--papel);font-weight:600}
+
+/* Larguras extras do catálogo da WDLC 3.2: menor celular (360) e tablet (768) */
+.frame[data-vp="m360"]{width:360px;border:8px solid var(--tinta);border-radius:28px;overflow:clip}
+.frame[data-vp="tablet"]{width:768px}
 </style>
 </head>
 <body>
