@@ -15,6 +15,7 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $pages = require HOTPAGES_ROOT . '/config/pages.php';
 $firm = require HOTPAGES_ROOT . '/config/firm.php';
+$tracking = require HOTPAGES_ROOT . '/config/tracking.php';
 
 $route = (new Router(array_keys($pages)))->resolve($_SERVER['REQUEST_URI'] ?? '/');
 
@@ -63,4 +64,5 @@ echo $view->render('layout', $meta + [
     'content' => $content,
     'firm' => $firm,
     'utm' => $utm,
+    'tracking' => $tracking,
 ]);

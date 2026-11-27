@@ -9,6 +9,7 @@
  * @var string $whatsappUrl
  * @var array<string, mixed> $firm
  * @var array<string, string> $utm
+ * @var array<string, string> $tracking IDs da tag do Google; o hotpage.js só carrega a tag depois do consentimento
  * @var bool $showPageChrome se false, omite canais (já no content) — sempre true no fluxo atual
  * @var \SouzaGuedes\HotPages\View $view
  */
@@ -47,6 +48,9 @@ $chrome = [
     <?= $view->partial('rodape', $chrome) ?>
     <?= $view->partial('cookies') ?>
 </div>
+<?php if (!empty($tracking)): ?>
+<script type="application/json" id="sg-tracking"><?= json_encode($tracking, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) ?></script>
+<?php endif; ?>
 <script src="/js/hotpage.js" defer></script>
 </body>
 </html>

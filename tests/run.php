@@ -126,6 +126,23 @@ $imobHtml = $view->render('layout', [
 check('imobiliario WhatsApp atraso', true, str_contains($imobHtml, rawurlencode($imobText)));
 check('imobiliario heading atraso', true, str_contains($imobHtml, 'A construtora atrasou a entrega do seu imóvel?'));
 
+check('sem tag do Google se não configurada', false, str_contains($imobHtml, 'sg-tracking'));
+
+// Tag do Google: os IDs vão como JSON; o script só é injetado pelo hotpage.js depois do "Aceitar"
+$tracking = require HOTPAGES_ROOT . '/config/tracking.php';
+$trackedHtml = $view->render('layout', [
+    'title' => 'T',
+    'description' => 'D',
+    'whatsappTopic' => $imobTopic,
+    'whatsappUrl' => $imobUrl,
+    'content' => '',
+    'firm' => $firm,
+    'utm' => [],
+    'tracking' => $tracking,
+]);
+check('IDs da tag em JSON', true, str_contains($trackedHtml, '<script type="application/json" id="sg-tracking">{"google_tag_id":"GTM-PKH4TBTN","ads_id":"AW-18596131085","ads_contact_conversion":"AW-18596131085/H1MCCOKeyL8dEI3iqaNF"}</script>'));
+check('gtag.js não carrega no HTML', false, str_contains($trackedHtml, 'googletagmanager.com'));
+
 $notFound = $view->render('404', ['pages' => $pages, 'utm' => ['utm_source' => 'google']]);
 check('404 preserva UTM nos links', true, str_contains($notFound, 'href="/saude?utm_source=google"'));
 
