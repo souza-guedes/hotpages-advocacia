@@ -48,19 +48,65 @@
     scrollTo({ top: target.getBoundingClientRect().top + scrollY - offset, behavior: 'smooth' });
   }));
 
+  // Tag do Google: só existe depois do "Aceitar" (WDLC 1.2, seção 5, regra 7).
+  let tracking = null;
+  try {
+    const el = $('#sg-tracking');
+    tracking = el ? JSON.parse(el.textContent) : null;
+  } catch (err) { /* ignore */ }
+
+  let gtagLoaded = false;
+  function loadGoogleTag() {
+    if (gtagLoaded || !tracking || !tracking.google_tag_id) return;
+    gtagLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    // Sem remarketing nem personalização (WDLC 1.2, seção 2).
+    gtag('consent', 'default', {
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'denied',
+      analytics_storage: 'granted',
+    });
+    gtag('set', 'allow_ad_personalization_signals', false);
+    gtag('js', new Date());
+    gtag('config', tracking.google_tag_id);
+    if (tracking.ads_id) gtag('config', tracking.ads_id);
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(tracking.google_tag_id);
+    document.head.appendChild(s);
+  }
+
+  // Conversão "Contato": clique em um canal oficial. Nada do conteúdo da conversa é enviado.
+  const CHANNEL = /^(https:\/\/wa\.me\/|tel:|mailto:)/;
+  document.addEventListener('click', (e) => {
+    if (!gtagLoaded || !tracking || !tracking.ads_contact_conversion) return;
+    const a = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || !CHANNEL.test(a.getAttribute('href'))) return;
+    gtag('event', 'conversion', {
+      send_to: tracking.ads_contact_conversion,
+      value: 1.0,
+      currency: 'BRL',
+    });
+  }, true);
+
   $$('[data-cookie]').forEach((b) => b.addEventListener('click', () => {
     const bar = $('#cookie');
     if (bar) bar.hidden = true;
     try {
       localStorage.setItem('sg-hp-cookies', b.dataset.cookie || '');
     } catch (err) { /* ignore */ }
+    if (b.dataset.cookie === 'aceitar') loadGoogleTag();
   }));
 
   try {
-    if (localStorage.getItem('sg-hp-cookies')) {
+    const choice = localStorage.getItem('sg-hp-cookies');
+    if (choice) {
       const bar = $('#cookie');
       if (bar) bar.hidden = true;
     }
+    if (choice === 'aceitar') loadGoogleTag();
   } catch (err) { /* ignore */ }
 
   syncFaq();
